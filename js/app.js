@@ -41,14 +41,17 @@ var Pin = function(placeData, map) {
     map: this.map,
     title: this.name
   });
+
 };
 
+// Makes hidden marker reappear on map
 Pin.prototype.show = function() {
-  marker.map = this.map;
+  this.marker.setMap(this.map);
 };
 
+// Makes marker disappear from map
 Pin.prototype.hide = function() {
-  marker.map = null;
+  this.marker.setMap(null);
 };
 
 
@@ -63,7 +66,7 @@ function mapInitialize() {
 }
 
 // Sets up pins
-var pins = [];
+var pins = ko.observableArray();
 
 /**
  * Create pins, add them to map, and resize and position map accordingly
