@@ -3,3 +3,46 @@ html, body, #map-canvas {
   margin: 0px;
   padding: 0px
 }
+
+.topper {
+  height: 5%;
+}
+
+.drawer {
+  background-color: #fff;
+  height: 95%;
+  overflow-y: scroll;
+  position: absolute;
+  transform: translate(-300px, 0);
+  transition: transform 0.3s ease;
+  width: 300px;
+  will-change: transform;
+  z-index: 10;
+  -webkit-transform: translate(-300px, 0);
+}
+
+.drawer.open {
+  -webkit-transform: translate(0, 0);
+  transform: translate(0, 0);
+}
+
+.location-list {
+  list-style: none;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.location-item {
+  border-bottom: 1px solid #E0E0E0;
+  box-sizing: border-box;
+  display: list-item;
+  line-height: 24px;
+  padding: 24px;
+  text-align: left;
+  width: 100%;
+}
+
+#map-canvas {
+  height: 95%;
+}

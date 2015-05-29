@@ -12,7 +12,7 @@
 var map;
 var mapOptions = {
     disableDefaultUI: true
- };
+};
 
 
  /**
@@ -59,7 +59,7 @@ Pin.prototype.hide = function() {
  * Initializers
  */
 
- // Sets up map on page
+// Sets up map on page
 function mapInitialize() {
     var mapElement = document.getElementById('map-canvas');
     map = new google.maps.Map(mapElement, mapOptions);
