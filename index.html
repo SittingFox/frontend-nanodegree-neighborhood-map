@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Simple Map</title>
+    <title>Neighborhood Map</title>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
     <link rel="stylesheet" href="css/style.css">
   </head>
-  <body>
+  <body data-bind="click: hideDrawer">
     <div class="topper">
-      <a class="hamburger">
+      <a class="hamburger" data-bind="click: toggleDrawer, clickBubble: false">
         ☰
       </a>
     </div>
@@ -23,24 +23,6 @@
 
 
     <!-- Scripts -->
-    <script>
-      /*
-       * Open the drawer when the hamburger icon is clicked.
-       */
-      var hamburger = document.querySelector('.hamburger');
-      var body = document.querySelector('body');
-      var drawer = document.querySelector('.drawer');
-
-      hamburger.addEventListener('click', function(e) {
-        drawer.classList.toggle('open');
-        e.stopPropagation();
-      });
-      
-      body.addEventListener('click', function() {
-        drawer.classList.remove('open');
-      });
-
-    </script>
     <script src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
     <script src="js/lib/knockout-3.3.0.js"></script>
     <script src="js/app.js"></script>

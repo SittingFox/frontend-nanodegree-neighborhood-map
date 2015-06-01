@@ -7,117 +7,144 @@
 "use strict";
 
 /**
- * Map configuration
+ * The Model
+ * Holder of data
  */
-var map;
-var mapOptions = {
-    disableDefaultUI: true
-};
+var model = {
+  initialize: function() {
+    var self = this;
 
-
- /**
-  * Locations
-  */
-var locationNames = [
-  "American Coney Island",
-  "Lafayette Coney Island",
-  "Woodward Coney Island"
-];
-var locationCity = "Detroit, MI";
-
-
-/**
- * Pin class for markers, their data, and manipulating them
- * @param object placeData - Result from textsearch, holding data to particular place
- * @param google.maps.Map map - Our Google Map
- */
-var Pin = function(placeData, map) {  
-  this.map = map;
-  this.name = placeData.name;
-  this.position = placeData.geometry.location;
-
-  this.marker = new google.maps.Marker({
-    position: this.position,
-    map: this.map,
-    title: this.name
-  });
-
-};
-
-// Makes hidden marker reappear on map
-Pin.prototype.show = function() {
-  this.marker.setMap(this.map);
-};
-
-// Makes marker disappear from map
-Pin.prototype.hide = function() {
-  this.marker.setMap(null);
-};
-
-
-/**
- * Initializers
- */
-
-// Sets up map on page
-function mapInitialize() {
-    var mapElement = document.getElementById('map-canvas');
-    map = new google.maps.Map(mapElement, mapOptions);
-}
-
-// Sets up pins
-var pins = ko.observableArray();
-
-/**
- * Create pins, add them to map, and resize and position map accordingly
- * @param array places - List of names (strings) of different places
- * @param string city - City the places are located in
- * @param google.maps.Map map - Our Google Map
- */
-function pinsInitialize(places, city, map) {
-  var service = new google.maps.places.PlacesService(map);
-  var placeData, pin, request;
-
-  var bounds = new google.maps.LatLngBounds();
+    // Location data
+    self.locationNames = [
+      "American Coney Island",
+      "Lafayette Coney Island",
+      "Woodward Coney Island"
+    ];
+    
+    self.locationCity = "Detroit, MI";
+  },
 
   /**
-   * Callback function for textSearch for locations based on name and city
-   * @param array results - All results found by search
-   * @param string status - String representation of if search succeeded
+   * Pin prototype for markers, their data, and manipulating them
+   * @param object placeData - Result from textsearch, holding data to particular place
+   * @param google.maps.Map map - Our Google Map
    */
-  function callback(results, status) {
-    // Check if status is "OK"
-    if (status == google.maps.places.PlacesServiceStatus.OK) {
-      placeData = results[0];
-      pin = new Pin(placeData, map);
-      pins.push(pin);
-      
-      bounds.extend(pin.position);
-      map.fitBounds(bounds);
-      map.setCenter(bounds.getCenter());
-    }
-  }
+  Pin: function(placeData, map) {
+    var self = this;
 
-  // Create a search request that is a string of the place name plus city location
-  places.forEach( function(place) {
-    request = {
-      query: place + ", " + city
+    self.map = map;
+    self.name = placeData.name;
+    self.position = placeData.geometry.location;
+
+    self.marker = new google.maps.Marker({
+      position: self.position,
+      map: self.map,
+      title: self.name
+    });
+
+    // Makes hidden marker reappear on map
+    self.show = function() {
+      self.marker.setMap(self.map);
     };
 
-    service.textSearch(request, callback);
-  });
+    // Makes marker disappear from map
+    self.hide = function() {
+      self.marker.setMap(null);
+    };
+  }
 
-}
+}; // end of model
 
 
 /**
  * Knockout ViewModel configuration
+ * Controlling interactions between the Model and View
  */
 var NeighborhoodViewModel = function() {
   var self = this;
+
+  // Observables
+  // Sets up pins
+  self.pins = ko.observableArray();
+
+  /**
+   * Initialize
+   * Set up any functions needed, and then get initializing
+   */
+
+  function mapInitialize() {
+      var mapElement = document.getElementById('map-canvas');
+      var mapOptions = { disableDefaultUI: true };
+
+      return ( new google.maps.Map(mapElement, mapOptions) );
+  }
+
+  // Create pins, add them to map, and resize and position map accordingly
+  function pinsInitialize() {
+    var service = new google.maps.places.PlacesService(self.map);
+    var placeData, pin, request;
+
+    var bounds = new google.maps.LatLngBounds();
+
+    /**
+     * Callback function for textSearch for locations based on name and city
+     * @param array results - All results found by search
+     * @param string status - String representation of if search succeeded
+     */
+    function callback(results, status) {
+      // Check if status is "OK"
+      if (status == google.maps.places.PlacesServiceStatus.OK) {
+        placeData = results[0];
+        pin = new model.Pin(placeData, self.map);
+        self.pins.push(pin);
+        
+        bounds.extend(pin.position);
+        self.map.fitBounds(bounds);
+        self.map.setCenter(bounds.getCenter());
+      }
+    }
+
+    // Create a search request that is a string of the place name plus city location
+    model.locationNames.forEach( function(name) {
+      request = {
+        query: name + ", " + model.locationCity
+      };
+
+      service.textSearch(request, callback);
+    });
+
+  } // end of pinsInitialize
   
-  mapInitialize();
-  pinsInitialize(locationNames, locationCity, map);
-};
+  // Initializing
+  model.initialize();
+  self.map = mapInitialize();
+  pinsInitialize();
+
+
+  /**
+   * View-likes
+   * Things more tied to the View
+   */
+
+  var drawer = document.querySelector('.drawer');
+  var hamburger = document.querySelector('.hamburger');
+
+  // Toggles opening and closing of drawer on button click
+  self.toggleDrawer = function() {
+    drawer.classList.toggle('open');
+  };
+
+  /**
+   * Hide drawer, called by certain clicks
+   * @param object data - The NeightborhoodViewModel object
+   * @param MouseEvent event - Click information
+   */
+  self.hideDrawer = function (data, event) {  
+    if (event.target != drawer) {
+      drawer.classList.remove('open');
+    }
+  };
+
+}; // end of NeighborhoodViewModel
 
 ko.applyBindings(new NeighborhoodViewModel());
