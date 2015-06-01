@@ -11,22 +11,9 @@
  * Holder of data
  */
 var model = {
-  initialize: function() {
-    var self = this;
-
-    // Location data
-    self.locationNames = [
-      "American Coney Island",
-      "Lafayette Coney Island",
-      "Woodward Coney Island"
-    ];
-    
-    self.locationCity = "Detroit, MI";
-  },
-
   /**
-   * Pin prototype for markers, their data, and manipulating them
-   * @param object placeData - Result from textsearch, holding data to particular place
+   * Pokemon prototype for markers, their data, and manipulating them
+   * @param object pokemon - Pokemon data, holding a name and map coordinates
    * @param google.maps.Map map - Our Google Map
    */
   Pokemon: function(pokemon, map) {
@@ -53,6 +40,7 @@ var model = {
     };
   },
 
+  // 150 Pokemon and a Google Map location
   pokemonData: [
     // Kanto Pokemon
     {
@@ -822,9 +810,8 @@ var model = {
 var NeighborhoodViewModel = function() {
   var self = this;
 
-  // Observables
-  // Sets up pins
-  self.allPokemon = ko.observableArray();
+  // Variable setup
+  self.allPokemon = [];
 
   /**
    * Initialize
@@ -843,7 +830,10 @@ var NeighborhoodViewModel = function() {
       return ( new google.maps.Map(mapElement, mapOptions) );
   }
 
-  // Create pins, add them to map, and resize and position map accordingly
+  /**
+   * Turn Pokemon name and coordinates into Pokemon object with map marker and 
+   * add to array
+   */
   function pokemonInitialize() {
     var pokemon;
     model.pokemonData.forEach( function(data) {
@@ -851,10 +841,9 @@ var NeighborhoodViewModel = function() {
       self.allPokemon.push(pokemon);
     } );
 
-  } // end of pinsInitialize
+  }
   
   // Initializing
-  model.initialize();
   self.map = mapInitialize();
   pokemonInitialize();
 
@@ -865,7 +854,6 @@ var NeighborhoodViewModel = function() {
    */
 
   var drawer = document.querySelector('.drawer');
-  var hamburger = document.querySelector('.hamburger');
 
   // Toggles opening and closing of drawer on button click
   self.toggleDrawer = function() {
