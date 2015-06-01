@@ -29,12 +29,12 @@ var model = {
    * @param object placeData - Result from textsearch, holding data to particular place
    * @param google.maps.Map map - Our Google Map
    */
-  Pin: function(placeData, map) {
+  Pokemon: function(pokemon, map) {
     var self = this;
 
     self.map = map;
-    self.name = placeData.name;
-    self.position = placeData.geometry.location;
+    self.name = pokemon.name;
+    self.position = new google.maps.LatLng(pokemon.lat, pokemon.lon);
 
     self.marker = new google.maps.Marker({
       position: self.position,
@@ -51,7 +51,55 @@ var model = {
     self.hide = function() {
       self.marker.setMap(null);
     };
-  }
+  },
+
+  pokemonData: [
+    {
+      name: "Bulbasaur",
+      lat: 37.4236667,
+      lon: -122.0906058
+    },
+    {
+      name: "Ivysaur",
+      lat: 37.770204,
+      lon: -122.470158
+    },
+    {
+      name: "Venusaur",
+      lat: 53.532199,
+      lon: -113.505583
+    },
+    {
+      name: "Charmander",
+      lat: 34.3797645,
+      lon: 132.4504207
+    },
+    {
+      name: "Charmeleon",
+      lat: -0.364455,
+      lon: -91.561621
+    },
+    {
+      name: "Charizard",
+      lat: -19.528127,
+      lon: 169.447793
+    },
+    {
+      name: "Squirtle",
+      lat: 35.659158,
+      lon: 139.729254
+    },
+    {
+      name: "Wartortle",
+      lat: 51.5052317,
+      lon: -0.1664071
+    },
+    {
+      name: "Blastoise",
+      lat: -0.607383,
+      lon: -90.178757
+    }
+  ] // end of pokemonData
 
 }; // end of model
 
@@ -65,7 +113,7 @@ var NeighborhoodViewModel = function() {
 
   // Observables
   // Sets up pins
-  self.pins = ko.observableArray();
+  self.allPokemon = ko.observableArray();
 
   /**
    * Initialize
@@ -74,51 +122,30 @@ var NeighborhoodViewModel = function() {
 
   function mapInitialize() {
       var mapElement = document.getElementById('map-canvas');
-      var mapOptions = { disableDefaultUI: true };
+      var home = new google.maps.LatLng(model.pokemonData[0].lat, model.pokemonData[0].lon);
+      var mapOptions = {
+        disableDefaultUI: true,
+        zoom: 8,
+        center: home
+      };
 
       return ( new google.maps.Map(mapElement, mapOptions) );
   }
 
   // Create pins, add them to map, and resize and position map accordingly
-  function pinsInitialize() {
-    var service = new google.maps.places.PlacesService(self.map);
-    var placeData, pin, request;
-
-    var bounds = new google.maps.LatLngBounds();
-
-    /**
-     * Callback function for textSearch for locations based on name and city
-     * @param array results - All results found by search
-     * @param string status - String representation of if search succeeded
-     */
-    function callback(results, status) {
-      // Check if status is "OK"
-      if (status == google.maps.places.PlacesServiceStatus.OK) {
-        placeData = results[0];
-        pin = new model.Pin(placeData, self.map);
-        self.pins.push(pin);
-        
-        bounds.extend(pin.position);
-        self.map.fitBounds(bounds);
-        self.map.setCenter(bounds.getCenter());
-      }
-    }
-
-    // Create a search request that is a string of the place name plus city location
-    model.locationNames.forEach( function(name) {
-      request = {
-        query: name + ", " + model.locationCity
-      };
-
-      service.textSearch(request, callback);
-    });
+  function pokemonInitialize() {
+    var pokemon;
+    model.pokemonData.forEach( function(data) {
+      pokemon = new model.Pokemon(data, self.map);   
+      self.allPokemon.push(pokemon);
+    } );
 
   } // end of pinsInitialize
   
   // Initializing
   model.initialize();
   self.map = mapInitialize();
-  pinsInitialize();
+  pokemonInitialize();
 
 
   /**
