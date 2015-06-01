@@ -431,6 +431,384 @@ var model = {
       name: "Metagross",
       lat: 37.4239973,
       lon: -122.0924808
+    },
+    // Sinnoh Pokemon
+    {
+      name: "Turtwig",
+      lat: -2.254174,
+      lon: -63.154450
+    },
+    {
+      name: "Grotle",
+      lat: 35.642969,
+      lon: 139.860028
+    },
+    {
+      name: "Torterra",
+      lat: 35.651249,
+      lon: 139.725142
+    },
+    {
+      name: "Chimchar",
+      lat: -3.066481,
+      lon: 37.350596
+    },
+    {
+      name: "Monferno",
+      lat: 35.734683,
+      lon: 139.713044
+    },
+    {
+      name: "Infernape",
+      lat: 35.6315433,
+      lon: 139.7557322
+    },
+    {
+      name: "Piplup",
+      lat: 37.721917,
+      lon: -122.378945
+    },
+    {
+      name: "Prinplup",
+      lat: -0.865837,
+      lon: -90.776599
+    },
+    {
+      name: "Empoleon",
+      lat: 37.779914,
+      lon: -122.514286
+    },
+    {
+      name: "Staraptor",
+      lat: -13.163890,
+      lon: -72.544545
+    },
+    {
+      name: "Luxray",
+      lat: 37.420312,
+      lon: -122.084249
+    },
+    {
+      name: "Combee",
+      lat: 40.107508,
+      lon: -88.229983
+    },
+    {
+      name: "Pachirisu",
+      lat: 37.4142731,
+      lon: -122.0774098
+    },
+    {
+      name: "Buizel",
+      lat: 37.437396,
+      lon: -122.092515
+    },
+    {
+      name: "Buneary",
+      lat: 40.690164,
+      lon: -74.047004
+    },
+    {
+      name: "Chatot",
+      lat: -33.856537,
+      lon: 151.210992
+    },
+    {
+      name: "Spiritomb",
+      lat: 48.8334431,
+      lon: 2.3320277
+    },
+    {
+      name: "Garchomp",
+      lat: 25.729945,
+      lon: 32.613596
+    },
+    {
+      name: "Munchlax",
+      lat: 40.7483136,
+      lon: -73.9868667
+    },
+    {
+      name: "Lucario",
+      lat: 27.180284,
+      lon: 78.039364
+    },
+    {
+      name: "Croagunk",
+      lat: 35.6575094,
+      lon: 139.7324691
+    },
+    {
+      name: "Leafeon",
+      lat: 35.644504,
+      lon: 139.681716
+    },
+    {
+      name: "Glaceon",
+      lat: 27.986182,
+      lon: 86.921478
+    },
+    {
+      name: "Mamoswine",
+      lat: 50.058242,
+      lon: -122.968599
+    },
+    {
+      name: "Rotom",
+      lat: 42.2255805,
+      lon: -83.2685609
+    },
+    // Unova Pokemon
+    {
+      name: "Snivy",
+      lat: 31.785038,
+      lon: 35.234088
+    },
+    {
+      name: "Servine",
+      lat: 51.477368,
+      lon: 0.002293
+    },
+    {
+      name: "Serperior",
+      lat: 40.781520,
+      lon: -73.966956
+    },
+    {
+      name: "Tepig",
+      lat: 44.8423945,
+      lon: -0.5768001
+    },
+    {
+      name: "Pignite",
+      lat: 35.028292,
+      lon: -111.018525
+    },
+    {
+      name: "Emboar",
+      lat: 31.757670,
+      lon: -102.487883
+    },
+    {
+      name: "Oshawott",
+      lat: 42.2255805,
+      lon: -83.2685609
+    },
+    {
+      name: "Dewott",
+      lat: 43.0792757,
+      lon: -79.0791173
+    },
+    {
+      name: "Samurott",
+      lat: 46.2008415,
+      lon: 6.0374643
+    },
+    {
+      name: "Munna",
+      lat: 40.756468,
+      lon: -73.965881
+    },
+    {
+      name: "Pidove",
+      lat: 61.167919,
+      lon: -150.037679
+    },
+    {
+      name: "Audino",
+      lat: 25.197462,
+      lon: 55.2707856
+    },
+    {
+      name: "Scraggy",
+      lat: 37.8274658,
+      lon: -122.4245827
+    },
+    {
+      name: "Confagrigus",
+      lat: 45.514651,
+      lon: 25.369125
+    },
+    {
+      name: "Zoroark",
+      lat: 20.214570,
+      lon: -87.431663
+    },
+    {
+      name: "Minccino",
+      lat: 48.854179,
+      lon: 2.354344
+    },
+    {
+      name: "Deerling",
+      lat: 35.659139,
+      lon: 139.731536
+    },
+    {
+      name: "Emolga",
+      lat: 37.4239864,
+      lon: -122.0723723
+    },
+    {
+      name: "Joltik",
+      lat: 37.421838,
+      lon: -122.081792
+    },
+    {
+      name: "Ferrothorn",
+      lat: 35.750357,
+      lon: 139.739954
+    },
+    {
+      name: "Chandelure",
+      lat: 37.240941,
+      lon: -115.812198
+    },
+    {
+      name: "Haxorus",
+      lat: -33.842677,
+      lon: 151.241313
+    },
+    {
+      name: "Cubchoo",
+      lat: 51.413841,
+      lon: -116.226328
+    },
+    {
+      name: "Stunfisk",
+      lat: -3.065049,
+      lon: 37.360800
+    },
+    {
+      name: "Hydreigon",
+      lat: 48.861157,
+      lon: 2.335196
+    },
+    // Kalos Pokemon
+    {
+      name: "Chespin",
+      lat: 35.677922,
+      lon: 139.625982
+    },
+    {
+      name: "Quilladin",
+      lat: 42.2255805,
+      lon: -83.2685609
+    },
+    {
+      name: "Chesnaught",
+      lat: 51.535224,
+      lon: -0.156110
+    },
+    {
+      name: "Fennekin",
+      lat: -54.8073269,
+      lon: -68.3172146
+    },
+    {
+      name: "Braixen",
+      lat: 31.599485,
+      lon: 130.657665
+    },
+    {
+      name: "Delphox",
+      lat: 35.860732,
+      lon: 139.643266
+    },
+    {
+      name: "Froakie",
+      lat: 21.273406,
+      lon: -157.824015
+    },
+    {
+      name: "Frogadier",
+      lat: 36.112282,
+      lon: -115.174141
+    },
+    {
+      name: "Greninja",
+      lat: -0.672175,
+      lon: -90.545304
+    },
+    {
+      name: "Bunnelby",
+      lat: 35.659634,
+      lon: 139.722917
+    },
+    {
+      name: "Talonflame",
+      lat: 35.6576461,
+      lon: 139.7574488
+    },
+    {
+      name: "Gogoat",
+      lat: 35.6050551,
+      lon: 140.1051944
+    },
+    {
+      name: "Pancham",
+      lat: 37.4167088,
+      lon: -122.086735
+    },
+    {
+      name: "Meowstic (Male)",
+      lat: 37.427826,
+      lon: -122.0796787
+    },
+    {
+      name: "Meowstic (Female)",
+      lat: 37.3323955,
+      lon: -122.032412
+    },
+    {
+      name: "Aegislash",
+      lat: 39.1006119,
+      lon: -94.5584363
+    },
+    {
+      name: "Spritzee",
+      lat: 33.810635,
+      lon: -117.922689
+    },
+    {
+      name: "Swirlix",
+      lat: 53.3425029,
+      lon: -6.274575
+    },
+    {
+      name: "Inkay",
+      lat: 43.2626114,
+      lon: -2.9353935
+    },
+    {
+      name: "Helioptile",
+      lat: 37.3310019,
+      lon: -122.0296628
+    },
+    {
+      name: "Sylveon",
+      lat: 45.4469363,
+      lon: 12.3472392
+    },
+    {
+      name: "Dedenne",
+      lat: 42.377003,
+      lon: -71.11666
+    },
+    {
+      name: "Goodra",
+      lat: 37.8201487,
+      lon: -122.3689871
+    },
+    {
+      name: "Pumpkaboo",
+      lat: -33.848556,
+      lon: 151.17282
+    },
+    {
+      name: "Noivern",
+      lat: 0.8072649,
+      lon: -176.6176798
     }
   ] // end of pokemonData
 
@@ -455,11 +833,11 @@ var NeighborhoodViewModel = function() {
 
   function mapInitialize() {
       var mapElement = document.getElementById('map-canvas');
-      var home = new google.maps.LatLng(model.pokemonData[0].lat, model.pokemonData[0].lon);
+      var googleplex = new google.maps.LatLng(37.422,-122.084058);
       var mapOptions = {
+        center: googleplex,
         disableDefaultUI: true,
-        zoom: 8,
-        center: home
+        zoom: 17
       };
 
       return ( new google.maps.Map(mapElement, mapOptions) );
