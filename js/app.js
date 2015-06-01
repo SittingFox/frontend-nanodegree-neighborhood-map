@@ -876,6 +876,7 @@ var NeighborhoodViewModel = function() {
       nameLowerCase = pokemon.name.toLowerCase();
       if ( textLowerCase == "" || nameLowerCase.includes(textLowerCase) ) {
         pokemon.show();
+        scrollBox.scrollTop = 0;  // scroll back to top
       } else {
         pokemon.hide();
       }
@@ -889,9 +890,14 @@ var NeighborhoodViewModel = function() {
    */
 
   var drawer = document.querySelector('.drawer');
+  var scrollBox = document.querySelector('.location-holder');
 
   // Toggles opening and closing of drawer on button click
   self.toggleDrawer = function() {
+    if ( drawer.classList.contains('open') ) {
+      scrollBox.scrollTop = 0;  // scroll back to top
+    }
+    
     drawer.classList.toggle('open');
   };
 
