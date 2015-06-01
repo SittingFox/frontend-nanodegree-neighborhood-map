@@ -6,20 +6,25 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="css/style.css">
   </head>
-  <body data-bind="click: hideDrawer">
-    <div class="topper">
+  <body>
+    <div class="topper" data-bind="click: hideDrawer">
       <a class="hamburger" data-bind="click: toggleDrawer, clickBubble: false">
         ☰
       </a>
     </div>
 
-    <div class="drawer">
-      <ul class="location-list" data-bind="foreach: allPokemon">
-        <li class="location-item" data-bind="text: name"></li>
-      </ul>
+    <div class="drawer" data-bind="click: null, clickBubble: false">
+      <div class="search-holder">
+        <input class="search-box" placeholder="Search">
+      </div>
+      <div class="location-holder">
+        <ul class="location-list" data-bind="foreach: allPokemon">
+          <li class="location-item" data-bind="text: name"></li>
+        </ul>
+      </div>
     </div>
 
-    <div id="map-canvas"></div>
+    <div id="map-canvas" data-bind="click: hideDrawer"></div>
 
 
     <!-- Scripts -->

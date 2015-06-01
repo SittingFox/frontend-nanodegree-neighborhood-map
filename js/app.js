@@ -866,9 +866,7 @@ var NeighborhoodViewModel = function() {
    * @param MouseEvent event - Click information
    */
   self.hideDrawer = function (data, event) {  
-    if (event.target != drawer) {
-      drawer.classList.remove('open');
-    }
+    drawer.classList.remove('open');
   };
 
 }; // end of NeighborhoodViewModel
