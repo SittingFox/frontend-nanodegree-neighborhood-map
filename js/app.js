@@ -22,6 +22,7 @@ var model = {
     self.map = map;
     self.name = pokemon.name;
     self.position = new google.maps.LatLng(pokemon.lat, pokemon.lon);
+    self.isVisible = ko.observable(true);
 
     self.marker = new google.maps.Marker({
       position: self.position,
@@ -31,12 +32,16 @@ var model = {
 
     // Makes hidden marker reappear on map
     self.show = function() {
-      self.marker.setMap(self.map);
+      if ( !self.isVisible() ) {  // prevents flickering
+        self.marker.setMap(self.map);
+        self.isVisible(true);
+      }
     };
 
     // Makes marker disappear from map
     self.hide = function() {
       self.marker.setMap(null);
+      self.isVisible(false);
     };
   },
 
@@ -813,11 +818,21 @@ var NeighborhoodViewModel = function() {
   // Variable setup
   self.allPokemon = [];
 
+  // Observables
+  self.searchText = ko.observable();
+  self.searchText.subscribe( function (newValue) {
+    search(newValue);
+  });
+
   /**
    * Initialize
    * Set up any functions needed, and then get initializing
    */
 
+  /**
+   * Creates Google Map
+   * @return google.maps.Map - Google Map object
+   */  
   function mapInitialize() {
       var mapElement = document.getElementById('map-canvas');
       var googleplex = new google.maps.LatLng(37.422,-122.084058);
@@ -839,13 +854,33 @@ var NeighborhoodViewModel = function() {
     model.pokemonData.forEach( function(data) {
       pokemon = new model.Pokemon(data, self.map);   
       self.allPokemon.push(pokemon);
-    } );
+    });
 
   }
+
   
   // Initializing
   self.map = mapInitialize();
   pokemonInitialize();
+
+
+  /**
+   * Searches all Pokemon names for matching text, hiding and showing as needed
+   * @param string text - Search query
+   */
+  function search(text) {
+    var textLowerCase = text.toLowerCase();
+    var nameLowerCase;
+
+    self.allPokemon.forEach( function(pokemon) {
+      nameLowerCase = pokemon.name.toLowerCase();
+      if ( textLowerCase == "" || nameLowerCase.includes(textLowerCase) ) {
+        pokemon.show();
+      } else {
+        pokemon.hide();
+      }
+    });
+  }
 
 
   /**
@@ -870,5 +905,6 @@ var NeighborhoodViewModel = function() {
   };
 
 }; // end of NeighborhoodViewModel
+
 
 ko.applyBindings(new NeighborhoodViewModel());

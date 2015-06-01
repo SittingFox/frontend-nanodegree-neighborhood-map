@@ -15,11 +15,11 @@
 
     <div class="drawer" data-bind="click: null, clickBubble: false">
       <div class="search-holder">
-        <input class="search-box" placeholder="Search">
+        <input class="search-box" placeholder="Search" data-bind="textInput: searchText">
       </div>
       <div class="location-holder">
         <ul class="location-list" data-bind="foreach: allPokemon">
-          <li class="location-item" data-bind="text: name"></li>
+          <li class="location-item" data-bind="text: name, visible: isVisible"></li>
         </ul>
       </div>
     </div>
