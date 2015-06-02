@@ -11,12 +11,14 @@
  * Holder of data
  */
 var model = {
+  apiBaseURL: "//pokeapi.co",
+  apiPokemonSearchURL: "//pokeapi.co/api/v1/pokemon/",
   /**
    * Pokemon prototype for markers, their data, and manipulating them
    * @param object pokemon - Pokemon data, holding a name and map coordinates
    * @param google.maps.Map map - Our Google Map
    */
-  Pokemon: function(pokemon, map) {
+  Pokemon: function(pokemon, map, onClick) {
     var self = this;
 
     self.map = map;
@@ -45,48 +47,9 @@ var model = {
       self.isVisible(false);
     };
 
-    self.test = function() {
-      if (self.hasData() == false) {
-        self.getData();
-      }
-    }
-
-    self.getData = function() {
-      var url = "http://pokeapi.co/api/v1/pokemon/";
-      var nameLowerCase = self.name.toLowerCase();
-      self.request(url + nameLowerCase, self.setupStats);
-    }
-
-    self.setupStats = function(data) {
-      var spritesData = data.sprites.pop();
-      var spriteDataURI = spritesData.resource_uri;
-      var baseURL = "http://pokeapi.co";
-      
-      self.request(baseURL + spriteDataURI, self.setupSprite)
-    }
-
-    self.setupSprite = function(data) {
-      var image = data.image;
-      var baseURL = "http://pokeapi.co";
-
-      self.image = baseURL + image;
-      self.hasData(true);
-    }
-
-    self.request = function(url, callback) {
-      var request = new XMLHttpRequest();
-      request.open("GET", url, true);
-      request.onreadystatechange = function (data, data2) {
-        if (request.readyState != 4 || request.status != 200) return; 
-        var data = JSON.parse(request.response);
-        callback(data);
-      };
-
-      request.send();
-
-    }
-
-    google.maps.event.addListener(self.marker, 'click', self.test);
+    google.maps.event.addListener(self.marker, 'click', function() {
+      onClick(self);
+    });
 
   },
 
@@ -897,7 +860,10 @@ var NeighborhoodViewModel = function() {
   function pokemonInitialize() {
     var pokemon;
     model.pokemonData.forEach( function(data) {
-      pokemon = new model.Pokemon(data, self.map);   
+      pokemon = new model.Pokemon(data, self.map, function(thisPokemon) {
+          onMarkerClick(thisPokemon);
+        });   
+      
       self.allPokemon.push(pokemon);
     });
 
@@ -906,6 +872,7 @@ var NeighborhoodViewModel = function() {
   
   // Initializing
   self.map = mapInitialize();
+  self.infoWindow = new google.maps.InfoWindow();
   pokemonInitialize();
 
 
@@ -926,6 +893,77 @@ var NeighborhoodViewModel = function() {
         pokemon.hide();
       }
     });
+  }
+
+  var onMarkerClick = function(pokemon) {
+    displayInfoWindow(pokemon.marker);
+
+
+    if (pokemon.hasData() == false) {
+      getData(pokemon);
+    } else {
+      displayInformation(pokemon);
+    }
+  };
+
+  var getData = function(pokemon) {
+
+    function setupStats(data) {
+      var spritesData = data.sprites.shift();
+      var url = model.apiBaseURL + spritesData.resource_uri;
+      
+      getJSON(url, setupSprite)
+    }
+
+    function setupSprite(data) {
+      var url = model.apiBaseURL + data.image;
+
+      pokemon.image = url;
+      pokemon.hasData(true);
+      displayInformation(pokemon);
+    }
+
+    function getJSON(url, callback) {
+      var request = new XMLHttpRequest();
+      request.open("GET", url, true);
+      request.onreadystatechange = function() {
+        if (request.readyState != 4 || request.status != 200) return; 
+        var data = JSON.parse(request.response);
+        callback(data);
+      };
+
+      request.send();
+
+    }
+
+    function getStyleName() {
+      var nameLowerCase = pokemon.name.toLowerCase();
+      var spaceLocation = nameLowerCase.indexOf(" ");
+
+      var finalName;
+      if (spaceLocation > -1) {
+        finalName = nameLowerCase.slice(0, spaceLocation)
+                    + "-"
+                    + nameLowerCase.slice(spaceLocation+2, -1);
+      } else {
+        finalName = nameLowerCase;
+      }
+
+      return finalName;
+    }
+
+    var apiStyleName = getStyleName();
+    var url = model.apiPokemonSearchURL + apiStyleName;
+    getJSON(url, setupStats);
+  };
+
+  function displayInfoWindow(marker) {
+    self.infoWindow.setContent("");
+    self.infoWindow.open(self.map, marker);
+  }
+
+  function displayInformation(pokemon) {
+    self.infoWindow.setContent('<img src="' + pokemon.image + '">' );
   }
 
 
