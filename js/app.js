@@ -23,6 +23,7 @@ var model = {
     self.name = pokemon.name;
     self.position = new google.maps.LatLng(pokemon.lat, pokemon.lon);
     self.isVisible = ko.observable(true);
+    self.hasData = ko.observable(false);
 
     self.marker = new google.maps.Marker({
       position: self.position,
@@ -43,6 +44,50 @@ var model = {
       self.marker.setMap(null);
       self.isVisible(false);
     };
+
+    self.test = function() {
+      if (self.hasData() == false) {
+        self.getData();
+      }
+    }
+
+    self.getData = function() {
+      var url = "http://pokeapi.co/api/v1/pokemon/";
+      var nameLowerCase = self.name.toLowerCase();
+      self.request(url + nameLowerCase, self.setupStats);
+    }
+
+    self.setupStats = function(data) {
+      var spritesData = data.sprites.pop();
+      var spriteDataURI = spritesData.resource_uri;
+      var baseURL = "http://pokeapi.co";
+      
+      self.request(baseURL + spriteDataURI, self.setupSprite)
+    }
+
+    self.setupSprite = function(data) {
+      var image = data.image;
+      var baseURL = "http://pokeapi.co";
+
+      self.image = baseURL + image;
+      self.hasData(true);
+    }
+
+    self.request = function(url, callback) {
+      var request = new XMLHttpRequest();
+      request.open("GET", url, true);
+      request.onreadystatechange = function (data, data2) {
+        if (request.readyState != 4 || request.status != 200) return; 
+        var data = JSON.parse(request.response);
+        callback(data);
+      };
+
+      request.send();
+
+    }
+
+    google.maps.event.addListener(self.marker, 'click', self.test);
+
   },
 
   // 150 Pokemon and a Google Map location
@@ -897,7 +942,7 @@ var NeighborhoodViewModel = function() {
     if ( drawer.classList.contains('open') ) {
       scrollBox.scrollTop = 0;  // scroll back to top
     }
-    
+
     drawer.classList.toggle('open');
   };
 
