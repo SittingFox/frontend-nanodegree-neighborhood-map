@@ -11,8 +11,8 @@
  * Holder of data
  */
 var model = {
-  apiBaseURL: "//pokeapi.co",
-  apiPokemonSearchURL: "//pokeapi.co/api/v1/pokemon/",
+  apiBaseURL: "http://pokeapi.co",
+  apiPokemonSearchURL: "http://pokeapi.co/api/v1/pokemon/",
   /**
    * Pokemon prototype for markers, their data, and manipulating them
    * @param object pokemon - Pokemon data, holding a name and map coordinates
@@ -896,6 +896,7 @@ var NeighborhoodViewModel = function() {
   }
 
   var onMarkerClick = function(pokemon) {
+    self.map.panTo(pokemon.position);
     displayInfoWindow(pokemon.marker);
 
 
@@ -964,6 +965,10 @@ var NeighborhoodViewModel = function() {
 
   function displayInformation(pokemon) {
     self.infoWindow.setContent('<img src="' + pokemon.image + '">' );
+  }
+
+  self.onListClick = function(element) {
+    google.maps.event.trigger(element.marker, 'click');
   }
 
 

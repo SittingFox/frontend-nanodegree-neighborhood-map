@@ -19,7 +19,7 @@
       </div>
       <div class="location-holder">
         <ul class="location-list" data-bind="foreach: allPokemon">
-          <li class="location-item" data-bind="text: name, visible: isVisible"></li>
+          <li class="location-item" data-bind="text: name, visible: isVisible, click: $parent.onListClick"></li>
         </ul>
       </div>
     </div>
