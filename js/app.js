@@ -27,6 +27,8 @@ var model = {
     self.isVisible = ko.observable(true);
     self.hasData = ko.observable(false);
 
+    self.image = ko.observable("");
+
     self.marker = new google.maps.Marker({
       position: self.position,
       map: self.map,
@@ -35,15 +37,13 @@ var model = {
 
     // Makes hidden marker reappear on map
     self.show = function() {
-      if ( !self.isVisible() ) {  // prevents flickering
-        self.marker.setMap(self.map);
-        self.isVisible(true);
-      }
+      self.marker.setVisible(true);
+      self.isVisible(true);
     };
 
     // Makes marker disappear from map
     self.hide = function() {
-      self.marker.setMap(null);
+      self.marker.setVisible(false);
       self.isVisible(false);
     };
 
@@ -825,6 +825,7 @@ var NeighborhoodViewModel = function() {
 
   // Variable setup
   self.allPokemon = [];
+  self.currentPokemon = ko.observable();
 
   // Observables
   self.searchText = ko.observable();
@@ -872,7 +873,20 @@ var NeighborhoodViewModel = function() {
   
   // Initializing
   self.map = mapInitialize();
-  self.infoWindow = new google.maps.InfoWindow();
+  var infoWindowHTML =
+    '<div id="info-window">' +
+      '<img data-bind="attr: {src: currentPokemon().image}">' +
+    '</div>';
+  self.infoWindow = new google.maps.InfoWindow({content: infoWindowHTML});
+  var isInfoWindowLoaded = false;
+  google.maps.event.addListener(self.infoWindow, 'domready', function () {
+    if (!isInfoWindowLoaded)
+    {
+      ko.applyBindings( self, document.getElementById("info-window") );
+      isInfoWindowLoaded = true;
+    }
+  });
+
   pokemonInitialize();
 
 
@@ -897,13 +911,11 @@ var NeighborhoodViewModel = function() {
 
   var onMarkerClick = function(pokemon) {
     self.map.panTo(pokemon.position);
+    self.currentPokemon(pokemon);
     displayInfoWindow(pokemon.marker);
-
 
     if (pokemon.hasData() == false) {
       getData(pokemon);
-    } else {
-      displayInformation(pokemon);
     }
   };
 
@@ -919,9 +931,8 @@ var NeighborhoodViewModel = function() {
     function setupSprite(data) {
       var url = model.apiBaseURL + data.image;
 
-      pokemon.image = url;
+      pokemon.image(url);
       pokemon.hasData(true);
-      displayInformation(pokemon);
     }
 
     function getJSON(url, callback) {
@@ -959,13 +970,9 @@ var NeighborhoodViewModel = function() {
   };
 
   function displayInfoWindow(marker) {
-    self.infoWindow.setContent("");
     self.infoWindow.open(self.map, marker);
   }
 
-  function displayInformation(pokemon) {
-    self.infoWindow.setContent('<img src="' + pokemon.image + '">' );
-  }
 
   self.onListClick = function(element) {
     google.maps.event.trigger(element.marker, 'click');
