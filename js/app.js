@@ -13,6 +13,26 @@
 var model = {
   apiBaseURL: "http://pokeapi.co",
   apiPokemonSearchURL: "http://pokeapi.co/api/v1/pokemon/",
+  allPokemon: ko.observableArray(),
+
+  /**
+   * Turn Pokemon name and coordinates into Pokemon object with map marker and 
+   * add to array
+   */
+  init: function () {
+    var self = this; 
+
+    var pokemon;
+    self.pokemonData.forEach( function(data) {
+      pokemon = new self.Pokemon(data, NeighborhoodViewModel.map, function(thisPokemon) {
+          self.onMarkerClick(thisPokemon);
+        });   
+      
+      self.allPokemon.push(pokemon);
+    });
+
+  },
+
   /**
    * Pokemon prototype for markers, their data, and manipulating them
    * @param object pokemon - Pokemon data, holding a name and map coordinates
@@ -52,6 +72,96 @@ var model = {
     });
 
   },
+
+  /**
+   * What happens when the marker is clicked.
+   * @param Pokemon pokemon - Pokemon object that was clicked on.
+   */
+  onMarkerClick: function(pokemon) {
+    NeighborhoodViewModel.onMarkerClick(pokemon);
+
+    if (pokemon.hasData() == false) {
+      model.getData(pokemon);
+    }
+  },
+
+  /**
+   * Searches all Pokemon names for matching text, hiding and showing as needed
+   * @param string text - Search query
+   */
+  search: function (text) {
+    var self = this;
+
+    var textLowerCase = text.toLowerCase();
+    var nameLowerCase;
+
+    self.allPokemon().forEach( function(pokemon) {
+
+      nameLowerCase = pokemon.name.toLowerCase();
+
+      /**
+       * Show if string is empty or if contains search term, indexOf being more
+       * browser universal
+       */
+      if ( textLowerCase == "" || nameLowerCase.indexOf(textLowerCase) != -1 ) {
+        pokemon.show();
+      } else {
+        pokemon.hide();
+      }
+
+    });
+  },
+
+  getData: function(pokemon) {
+
+    function setupStats(data) {
+      var spritesData = data.sprites.shift();
+      var url = model.apiBaseURL + spritesData.resource_uri;
+      
+      getJSON(url, setupSprite)
+    }
+
+    function setupSprite(data) {
+      var url = model.apiBaseURL + data.image;
+
+      pokemon.image(url);
+      pokemon.hasData(true);
+    }
+
+    function getJSON(url, callback) {
+      var request = new XMLHttpRequest();
+      request.open("GET", url, true);
+      request.onreadystatechange = function() {
+        if (request.readyState != 4 || request.status != 200) return; 
+        var data = JSON.parse(request.response);
+        callback(data);
+      };
+
+      request.send();
+
+    }
+
+    function getStyleName() {
+      var nameLowerCase = pokemon.name.toLowerCase();
+      var spaceLocation = nameLowerCase.indexOf(" ");
+
+      var finalName;
+      if (spaceLocation > -1) {
+        finalName = nameLowerCase.slice(0, spaceLocation)
+                    + "-"
+                    + nameLowerCase.slice(spaceLocation+2, -1);
+      } else {
+        finalName = nameLowerCase;
+      }
+
+      return finalName;
+    }
+
+    var apiStyleName = getStyleName();
+    var url = model.apiPokemonSearchURL + apiStyleName;
+    getJSON(url, setupStats);
+
+  }, // end of getData
 
   // 150 Pokemon and a Google Map location
   pokemonData: [
@@ -811,8 +921,8 @@ var model = {
       lat: 0.8072649,
       lon: -176.6176798
     }
-  ], // end of pokemonData
-  allPokemon: ko.observableArray()
+  ] // end of pokemonData
+
 }; // end of model
 
 
@@ -821,17 +931,17 @@ var model = {
  * Controlling interactions between the Model and View
  */
 var NeighborhoodViewModel = {
-  getPokemon: ko.computed(function() {
-    return model.allPokemon();
-  }),
-  searchText: ko.observable(),
   init: function() {
     var self = this;
 
-    // Variable setup
-    self.currentPokemon = ko.observable();
-
     // Observables
+    self.currentPokemon = ko.observable();
+    self.searchText = ko.observable();
+
+    self.getPokemon = ko.computed(function() {
+      return model.allPokemon();
+    });
+    
     self.searchText.subscribe( function (newValue) {
       self.search(newValue);
     });
@@ -857,22 +967,6 @@ var NeighborhoodViewModel = {
         return ( new google.maps.Map(mapElement, mapOptions) );
     }
 
-    /**
-     * Turn Pokemon name and coordinates into Pokemon object with map marker and 
-     * add to array
-     */
-    function pokemonInitialize() {
-      var pokemon;
-      model.pokemonData.forEach( function(data) {
-        pokemon = new model.Pokemon(data, self.map, function(thisPokemon) {
-            self.onMarkerClick(thisPokemon);
-          });   
-        
-        model.allPokemon.push(pokemon);
-      });
-
-    }
-
     
     // Initializing
     self.map = mapInitialize();
@@ -890,7 +984,8 @@ var NeighborhoodViewModel = {
       }
     });
 
-    pokemonInitialize();
+    model.init();
+    ko.applyBindings(self);
 
   }, // end of init
 
@@ -901,27 +996,9 @@ var NeighborhoodViewModel = {
    */
   search: function (text) {
     var self = this;
-
-    var textLowerCase = text.toLowerCase();
-    var nameLowerCase;
-
     self.scrollBox.scrollTop = 0;  // scroll back to top
 
-    model.allPokemon().forEach( function(pokemon) {
-
-      nameLowerCase = pokemon.name.toLowerCase();
-
-      /**
-       * Show if string is empty or if contains search term, indexOf being more
-       * browser universal
-       */
-      if ( textLowerCase == "" || nameLowerCase.indexOf(textLowerCase) != -1 ) {
-        pokemon.show();
-      } else {
-        pokemon.hide();
-      }
-
-    });
+    model.search(text);
   },
 
   /**
@@ -940,61 +1017,7 @@ var NeighborhoodViewModel = {
     self.displayInfoWindow(pokemon.marker);
     self.currentPokemon(pokemon);
 
-    if (pokemon.hasData() == false) {
-      self.getData(pokemon);
-    }
   },
-
-  getData: function(pokemon) {
-
-    function setupStats(data) {
-      var spritesData = data.sprites.shift();
-      var url = model.apiBaseURL + spritesData.resource_uri;
-      
-      getJSON(url, setupSprite)
-    }
-
-    function setupSprite(data) {
-      var url = model.apiBaseURL + data.image;
-
-      pokemon.image(url);
-      pokemon.hasData(true);
-    }
-
-    function getJSON(url, callback) {
-      var request = new XMLHttpRequest();
-      request.open("GET", url, true);
-      request.onreadystatechange = function() {
-        if (request.readyState != 4 || request.status != 200) return; 
-        var data = JSON.parse(request.response);
-        callback(data);
-      };
-
-      request.send();
-
-    }
-
-    function getStyleName() {
-      var nameLowerCase = pokemon.name.toLowerCase();
-      var spaceLocation = nameLowerCase.indexOf(" ");
-
-      var finalName;
-      if (spaceLocation > -1) {
-        finalName = nameLowerCase.slice(0, spaceLocation)
-                    + "-"
-                    + nameLowerCase.slice(spaceLocation+2, -1);
-      } else {
-        finalName = nameLowerCase;
-      }
-
-      return finalName;
-    }
-
-    var apiStyleName = getStyleName();
-    var url = model.apiPokemonSearchURL + apiStyleName;
-    getJSON(url, setupStats);
-
-  }, // end of getData
 
   displayInfoWindow: function (marker) {
     var self = this;
@@ -1040,5 +1063,4 @@ var NeighborhoodViewModel = {
 }; // end of NeighborhoodViewModel
 
 
-ko.applyBindings(NeighborhoodViewModel);
 NeighborhoodViewModel.init();
