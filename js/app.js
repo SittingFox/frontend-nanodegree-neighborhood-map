@@ -917,10 +917,19 @@ var NeighborhoodViewModel = function() {
     });
   }
 
+  /**
+   * What happens when the marker is clicked.
+   * @param Pokemon pokemon - Pokemon object that was clicked on.
+   */
   var onMarkerClick = function(pokemon) {
     self.map.panTo(pokemon.position);
-    self.currentPokemon(pokemon);
+
+    /**
+     * Show info window before changing currentPokemon, else lose Knockout
+     * bindings and leave contents stuck.
+     */
     displayInfoWindow(pokemon.marker);
+    self.currentPokemon(pokemon);
 
     if (pokemon.hasData() == false) {
       getData(pokemon);
