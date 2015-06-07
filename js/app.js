@@ -898,14 +898,22 @@ var NeighborhoodViewModel = function() {
     var textLowerCase = text.toLowerCase();
     var nameLowerCase;
 
+    scrollBox.scrollTop = 0;  // scroll back to top
+
     self.allPokemon.forEach( function(pokemon) {
+
       nameLowerCase = pokemon.name.toLowerCase();
-      if ( textLowerCase == "" || nameLowerCase.includes(textLowerCase) ) {
+
+      /**
+       * Show if string is empty or if contains search term, indexOf being more
+       * browser universal
+       */
+      if ( textLowerCase == "" || nameLowerCase.indexOf(textLowerCase) != -1 ) {
         pokemon.show();
-        scrollBox.scrollTop = 0;  // scroll back to top
       } else {
         pokemon.hide();
       }
+
     });
   }
 
