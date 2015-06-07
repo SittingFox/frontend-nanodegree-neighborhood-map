@@ -18,7 +18,7 @@
         <input class="search-box" placeholder="Search" data-bind="textInput: searchText">
       </div>
       <div class="location-holder">
-        <ul class="location-list" data-bind="foreach: allPokemon">
+        <ul class="location-list" data-bind="foreach: getPokemon()">
           <li class="location-item" data-bind="text: name, visible: isVisible, click: $parent.onListClick"></li>
         </ul>
       </div>

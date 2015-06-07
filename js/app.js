@@ -811,8 +811,8 @@ var model = {
       lat: 0.8072649,
       lon: -176.6176798
     }
-  ] // end of pokemonData
-
+  ], // end of pokemonData
+  allPokemon: ko.observableArray()
 }; // end of model
 
 
@@ -820,87 +820,94 @@ var model = {
  * Knockout ViewModel configuration
  * Controlling interactions between the Model and View
  */
-var NeighborhoodViewModel = function() {
-  var self = this;
+var NeighborhoodViewModel = {
+  getPokemon: ko.computed(function() {
+    return model.allPokemon();
+  }),
+  searchText: ko.observable(),
+  init: function() {
+    var self = this;
 
-  // Variable setup
-  self.allPokemon = [];
-  self.currentPokemon = ko.observable();
+    // Variable setup
+    self.currentPokemon = ko.observable();
 
-  // Observables
-  self.searchText = ko.observable();
-  self.searchText.subscribe( function (newValue) {
-    search(newValue);
-  });
-
-  /**
-   * Initialize
-   * Set up any functions needed, and then get initializing
-   */
-
-  /**
-   * Creates Google Map
-   * @return google.maps.Map - Google Map object
-   */  
-  function mapInitialize() {
-      var mapElement = document.getElementById('map-canvas');
-      var googleplex = new google.maps.LatLng(37.422,-122.084058);
-      var mapOptions = {
-        center: googleplex,
-        disableDefaultUI: true,
-        zoom: 17
-      };
-
-      return ( new google.maps.Map(mapElement, mapOptions) );
-  }
-
-  /**
-   * Turn Pokemon name and coordinates into Pokemon object with map marker and 
-   * add to array
-   */
-  function pokemonInitialize() {
-    var pokemon;
-    model.pokemonData.forEach( function(data) {
-      pokemon = new model.Pokemon(data, self.map, function(thisPokemon) {
-          onMarkerClick(thisPokemon);
-        });   
-      
-      self.allPokemon.push(pokemon);
+    // Observables
+    self.searchText.subscribe( function (newValue) {
+      self.search(newValue);
     });
 
-  }
+    /**
+     * Initialize
+     * Set up any functions needed, and then get initializing
+     */
 
-  
-  // Initializing
-  self.map = mapInitialize();
-  var infoWindowHTML =
-    '<div id="info-window">' +
-      '<img data-bind="attr: {src: currentPokemon().image}">' +
-    '</div>';
-  self.infoWindow = new google.maps.InfoWindow({content: infoWindowHTML});
-  var isInfoWindowLoaded = false;
-  google.maps.event.addListener(self.infoWindow, 'domready', function () {
-    if (!isInfoWindowLoaded)
-    {
-      ko.applyBindings( self, document.getElementById("info-window") );
-      isInfoWindowLoaded = true;
+    /**
+     * Creates Google Map
+     * @return google.maps.Map - Google Map object
+     */  
+    function mapInitialize() {
+        var mapElement = document.getElementById('map-canvas');
+        var googleplex = new google.maps.LatLng(37.422,-122.084058);
+        var mapOptions = {
+          center: googleplex,
+          disableDefaultUI: true,
+          zoom: 17
+        };
+
+        return ( new google.maps.Map(mapElement, mapOptions) );
     }
-  });
 
-  pokemonInitialize();
+    /**
+     * Turn Pokemon name and coordinates into Pokemon object with map marker and 
+     * add to array
+     */
+    function pokemonInitialize() {
+      var pokemon;
+      model.pokemonData.forEach( function(data) {
+        pokemon = new model.Pokemon(data, self.map, function(thisPokemon) {
+            self.onMarkerClick(thisPokemon);
+          });   
+        
+        model.allPokemon.push(pokemon);
+      });
+
+    }
+
+    
+    // Initializing
+    self.map = mapInitialize();
+    var infoWindowHTML =
+      '<div id="info-window">' +
+        '<img data-bind="attr: {src: currentPokemon().image}">' +
+      '</div>';
+    self.infoWindow = new google.maps.InfoWindow({content: infoWindowHTML});
+    var isInfoWindowLoaded = false;
+    google.maps.event.addListener(self.infoWindow, 'domready', function () {
+      if (!isInfoWindowLoaded)
+      {
+        ko.applyBindings( self, document.getElementById("info-window") );
+        isInfoWindowLoaded = true;
+      }
+    });
+
+    pokemonInitialize();
+
+  }, // end of init
 
 
   /**
    * Searches all Pokemon names for matching text, hiding and showing as needed
    * @param string text - Search query
    */
-  function search(text) {
+  search: function (text) {
+    var self = this;
+
     var textLowerCase = text.toLowerCase();
     var nameLowerCase;
 
-    scrollBox.scrollTop = 0;  // scroll back to top
+    self.scrollBox.scrollTop = 0;  // scroll back to top
 
-    self.allPokemon.forEach( function(pokemon) {
+    model.allPokemon().forEach( function(pokemon) {
 
       nameLowerCase = pokemon.name.toLowerCase();
 
@@ -915,28 +922,30 @@ var NeighborhoodViewModel = function() {
       }
 
     });
-  }
+  },
 
   /**
    * What happens when the marker is clicked.
    * @param Pokemon pokemon - Pokemon object that was clicked on.
    */
-  var onMarkerClick = function(pokemon) {
+  onMarkerClick: function(pokemon) {
+    var self = this;
+
     self.map.panTo(pokemon.position);
 
     /**
      * Show info window before changing currentPokemon, else lose Knockout
      * bindings and leave contents stuck.
      */
-    displayInfoWindow(pokemon.marker);
+    self.displayInfoWindow(pokemon.marker);
     self.currentPokemon(pokemon);
 
     if (pokemon.hasData() == false) {
-      getData(pokemon);
+      self.getData(pokemon);
     }
-  };
+  },
 
-  var getData = function(pokemon) {
+  getData: function(pokemon) {
 
     function setupStats(data) {
       var spritesData = data.sprites.shift();
@@ -984,16 +993,18 @@ var NeighborhoodViewModel = function() {
     var apiStyleName = getStyleName();
     var url = model.apiPokemonSearchURL + apiStyleName;
     getJSON(url, setupStats);
-  };
 
-  function displayInfoWindow(marker) {
+  }, // end of getData
+
+  displayInfoWindow: function (marker) {
+    var self = this;
     self.infoWindow.open(self.map, marker);
-  }
+  },
 
 
-  self.onListClick = function(element) {
+  onListClick: function(element) {
     google.maps.event.trigger(element.marker, 'click');
-  }
+  },
 
 
   /**
@@ -1001,28 +1012,33 @@ var NeighborhoodViewModel = function() {
    * Things more tied to the View
    */
 
-  var drawer = document.querySelector('.drawer');
-  var scrollBox = document.querySelector('.location-holder');
+  drawer: document.querySelector('.drawer'),
+  scrollBox: document.querySelector('.location-holder'),
 
   // Toggles opening and closing of drawer on button click
-  self.toggleDrawer = function() {
-    if ( drawer.classList.contains('open') ) {
-      scrollBox.scrollTop = 0;  // scroll back to top
+  toggleDrawer: function() {
+    var self = this;
+    
+    if ( self.drawer.classList.contains('open') ) {
+      self.scrollBox.scrollTop = 0;  // scroll back to top
     }
 
-    drawer.classList.toggle('open');
-  };
+    self.drawer.classList.toggle('open');
+  },
 
   /**
    * Hide drawer, called by certain clicks
-   * @param object data - The NeightborhoodViewModel object
+   * @param object data - The NeighborhoodViewModel object
    * @param MouseEvent event - Click information
    */
-  self.hideDrawer = function (data, event) {  
-    drawer.classList.remove('open');
-  };
+  hideDrawer: function (data, event) {  
+    var self = this;
+    
+    self.drawer.classList.remove('open');
+  }
 
 }; // end of NeighborhoodViewModel
 
 
-ko.applyBindings(new NeighborhoodViewModel());
+ko.applyBindings(NeighborhoodViewModel);
+NeighborhoodViewModel.init();
