@@ -48,6 +48,7 @@ var model = {
 
     self.stats = ko.observableArray();
     self.image = ko.observable("");
+    self.description = ko.observable("");
     self.hasData = ko.computed(function() {
       return self.stats().length != 0 &&
              self.image() != "";
@@ -163,12 +164,29 @@ var model = {
         getJSON(url, setupSprite, errorLoad);
       }
 
+      var allDescriptions = data.descriptions;
+      var descriptionURI;
+      allDescriptions.forEach( function(entry) {
+        if (entry.name[entry.name.length - 1] == "5" ||
+          entry.name[entry.name.length - 1] == "6") {
+
+          descriptionURI = entry.resource_uri;
+        }
+      });
+      var descriptionURL = model.apiBaseURL + descriptionURI;
+
+      getJSON(descriptionURL, setupDescription, errorLoad);
+
     } // end of setupStats
 
     function setupSprite(data) {
       var url = model.apiBaseURL + data.image;
 
       pokemon.image(url);
+    }
+
+    function setupDescription(data) {
+      pokemon.description(data.description);
     }
 
     function errorLoad() {
@@ -1044,6 +1062,7 @@ var NeighborhoodViewModel = {
                 //'<!-- /ko -->' +
               '</ul>' +
             '</div>' +
+            '<div class="iw-description" data-bind="text: description"></div>' +
           '<!-- /ko -->' +
         '<!-- /ko -->' +
         '<!-- ko if: errorLoad -->' +
