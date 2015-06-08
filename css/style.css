@@ -99,7 +99,6 @@ html, body {
 
 .iw-image-holder {
   display: inline-block;
-  height: 100px;
   vertical-align: middle;
   width: 100px;
 }
@@ -110,14 +109,18 @@ img.iw-image {
   vertical-align: middle;
 }
 
-.iw-stat-holder {
+.iw-stat-list {
   display: inline-block;
+  margin: 0;
+  padding: 0;
+  vertical-align: middle;
   width: 200px;
 }
 
-.iw-stat {
+.iw-stat-item {
   display: flex;
   flex-wrap: wrap;
+  padding-bottom: 1px;
 }
 
 .iw-stat-name {
