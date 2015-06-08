@@ -47,6 +47,13 @@ var model = {
     self.isVisible = ko.observable(true);
     self.hasData = false;
 
+    self.hp = ko.observable("0");
+    self.attack = ko.observable("0");
+    self.defense = ko.observable("0");
+    self.specialAttack = ko.observable("0");
+    self.specialDefense = ko.observable("0");
+    self.speed = ko.observable("0");
+
     self.image = ko.observable("");
 
     self.marker = new google.maps.Marker({
@@ -79,6 +86,7 @@ var model = {
    */
   onMarkerClick: function(pokemon) {
     NeighborhoodViewModel.onMarkerClick(pokemon);
+    NeighborhoodViewModel.errorLoad(false);
 
     if (!pokemon.hasData) {
       model.getData(pokemon);
@@ -115,6 +123,13 @@ var model = {
   getData: function(pokemon) {
 
     function setupStats(data) {
+      pokemon.hp(data.hp);
+      pokemon.attack(data.attack);
+      pokemon.defense(data.defense);
+      pokemon.specialAttack(data.sp_atk);
+      pokemon.specialDefense(data.sp_def);
+      pokemon.speed(data.speed);
+
       var spritesData = data.sprites.shift();
       var url = model.apiBaseURL + spritesData.resource_uri;
       
@@ -167,7 +182,6 @@ var model = {
       return finalName;
     }
 
-    NeighborhoodViewModel.errorLoad(false);
     var apiStyleName = getStyleName();
     var url = model.apiPokemonSearchURL + apiStyleName;
     getJSON(url, setupStats, errorLoad);
@@ -985,7 +999,22 @@ var NeighborhoodViewModel = {
     var infoWindowHTML =
       '<div id="info-window">' +
         '<!-- ko ifnot: errorLoad -->' +
-          '<img data-bind="attr: {src: currentPokemon().image}">' +
+          '<!-- ko with: currentPokemon -->' +
+            '<div class="iw-top">' +
+              '<div class="iw-image-holder">' +
+                '<img class="iw-image" data-bind="attr: {src: image, alt: name}">' +
+              '</div>' +
+              '<div class="iw-stat-holder">' +
+                '<div class="iw-stat">' +
+                  '<div class="iw-stat-name">HP</div>' +
+                  '<div class="iw-stat-number" data-bind="text: \'255\'"></div>' +
+                  '<div class="iw-stat-bar">' +
+                    '<div class="iw-stat-fill" data-bind="style: {width: $root.getStatPercentage(hp), backgroundColor: \'red\'}">&nbsp;</div>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+          '<!-- /ko -->' +
         '<!-- /ko -->' +
         '<!-- ko if: errorLoad -->' +
           'Error loading' +
@@ -1075,6 +1104,11 @@ var NeighborhoodViewModel = {
     var self = this;
     
     self.drawer.classList.remove('open');
+  },
+
+  getStatPercentage: function(stat) {
+    var calc = (stat() / 255) * 100;
+    return calc + '%';
   }
 
 }; // end of NeighborhoodViewModel
