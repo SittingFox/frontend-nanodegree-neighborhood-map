@@ -45,10 +45,13 @@ var model = {
     self.name = pokemon.name;
     self.position = new google.maps.LatLng(pokemon.lat, pokemon.lon);
     self.isVisible = ko.observable(true);
-    self.hasData = false;
 
     self.stats = ko.observableArray();
     self.image = ko.observable("");
+    self.hasData = ko.computed(function() {
+      return self.stats().length != 0 &&
+             self.image() != "";
+    });
 
     self.marker = new google.maps.Marker({
       position: self.position,
@@ -72,7 +75,7 @@ var model = {
       onClick(self);
     });
 
-  },
+  }, // end of Pokemon
 
   /**
    * What happens when the marker is clicked.
@@ -82,7 +85,7 @@ var model = {
     NeighborhoodViewModel.onMarkerClick(pokemon);
     NeighborhoodViewModel.errorLoad(false);
 
-    if (!pokemon.hasData) {
+    if (!pokemon.hasData()) {
       model.getData(pokemon);
     }
   },
@@ -147,21 +150,28 @@ var model = {
 
       pokemon.stats(statsData);
 
-      var spritesData = data.sprites.shift();
-      var url = model.apiBaseURL + spritesData.resource_uri;
-      
-      getJSON(url, setupSprite, errorLoad)
-    }
+      /*
+       * Making sure this is not the single case where I manually provide the
+       * image.
+       */
+      if ( pokemon.name == "Meowstic (Female)" && data.sprites.length == 0 ) {
+        pokemon.image("http://img.pokemondb.net/sprites/x-y/normal/meowstic-f.png");
+      } else {
+        var spritesData = data.sprites.shift();
+        var url = model.apiBaseURL + spritesData.resource_uri;
+        
+        getJSON(url, setupSprite, errorLoad);
+      }
+
+    } // end of setupStats
 
     function setupSprite(data) {
       var url = model.apiBaseURL + data.image;
 
       pokemon.image(url);
-      pokemon.hasData = true;
     }
 
     function errorLoad() {
-      pokemon.hasData = false;
       NeighborhoodViewModel.errorLoad(true);
     }
 
@@ -190,8 +200,9 @@ var model = {
       var finalName;
       if (spaceLocation > -1) {
         finalName = nameLowerCase.slice(0, spaceLocation)
-                    + "-"
-                    + nameLowerCase.slice(spaceLocation+2, -1);
+                    + "-male";
+      } else if (nameLowerCase == "pumpkaboo") {
+        finalName = nameLowerCase + "-average";
       } else {
         finalName = nameLowerCase;
       }
