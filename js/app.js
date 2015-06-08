@@ -154,7 +154,7 @@ var model = {
        * Making sure this is not the single case where I manually provide the
        * image.
        */
-      if ( pokemon.name == "Meowstic (Female)" && data.sprites.length == 0 ) {
+      if ( pokemon.name == "Meowstic (Female)") {
         pokemon.image("http://img.pokemondb.net/sprites/x-y/normal/meowstic-f.png");
       } else {
         var spritesData = data.sprites.shift();
