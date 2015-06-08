@@ -45,7 +45,7 @@ var model = {
     self.name = pokemon.name;
     self.position = new google.maps.LatLng(pokemon.lat, pokemon.lon);
     self.isVisible = ko.observable(true);
-    self.hasData = ko.observable(false);
+    self.hasData = false;
 
     self.image = ko.observable("");
 
@@ -80,7 +80,7 @@ var model = {
   onMarkerClick: function(pokemon) {
     NeighborhoodViewModel.onMarkerClick(pokemon);
 
-    if (pokemon.hasData() == false) {
+    if (!pokemon.hasData) {
       model.getData(pokemon);
     }
   },
@@ -118,23 +118,33 @@ var model = {
       var spritesData = data.sprites.shift();
       var url = model.apiBaseURL + spritesData.resource_uri;
       
-      getJSON(url, setupSprite)
+      getJSON(url, setupSprite, errorLoad)
     }
 
     function setupSprite(data) {
       var url = model.apiBaseURL + data.image;
 
       pokemon.image(url);
-      pokemon.hasData(true);
+      pokemon.hasData = true;
     }
 
-    function getJSON(url, callback) {
+    function errorLoad() {
+      pokemon.hasData = false;
+      NeighborhoodViewModel.errorLoad(true);
+    }
+
+    function getJSON(url, callback, errorHandler) {
       var request = new XMLHttpRequest();
       request.open("GET", url, true);
       request.onreadystatechange = function() {
-        if (request.readyState != 4 || request.status != 200) return; 
-        var data = JSON.parse(request.response);
-        callback(data);
+        if (request.readyState == 4) {
+          if (request.status == 200) {
+            var data = JSON.parse(request.response);
+            callback(data);
+          } else {
+            errorHandler();
+          }
+        }
       };
 
       request.send();
@@ -157,9 +167,10 @@ var model = {
       return finalName;
     }
 
+    NeighborhoodViewModel.errorLoad(false);
     var apiStyleName = getStyleName();
     var url = model.apiPokemonSearchURL + apiStyleName;
-    getJSON(url, setupStats);
+    getJSON(url, setupStats, errorLoad);
 
   }, // end of getData
 
@@ -937,6 +948,7 @@ var NeighborhoodViewModel = {
     // Observables
     self.currentPokemon = ko.observable();
     self.searchText = ko.observable();
+    self.errorLoad = ko.observable(false);
 
     self.getPokemon = ko.computed(function() {
       return model.allPokemon();
@@ -972,7 +984,12 @@ var NeighborhoodViewModel = {
     self.map = mapInitialize();
     var infoWindowHTML =
       '<div id="info-window">' +
-        '<img data-bind="attr: {src: currentPokemon().image}">' +
+        '<!-- ko ifnot: errorLoad -->' +
+          '<img data-bind="attr: {src: currentPokemon().image}">' +
+        '<!-- /ko -->' +
+        '<!-- ko if: errorLoad -->' +
+          'Error loading' +
+        '<!-- /ko -->' +
       '</div>';
     self.infoWindow = new google.maps.InfoWindow({content: infoWindowHTML});
     var isInfoWindowLoaded = false;
