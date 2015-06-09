@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html>
+
   <head>
-    <title>Neighborhood Map</title>
+    <title>Google PokéMap</title>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
     <link rel="stylesheet" href="css/style.css">
   </head>
+
   <body>
     <div class="topper" data-bind="click: hideDrawer">
+      <a class="about" data-bind="click: showModal, clickBubble: false">
+        ?
+      </a>
+      <h1>Google PokéMap</h1>
       <a class="hamburger" data-bind="click: toggleDrawer, clickBubble: false">
         ☰
       </a>
@@ -26,6 +32,17 @@
 
     <div id="map-canvas" data-bind="click: hideDrawer"></div>
 
+    <div class="modal hide">
+      <div class="modal-overlay" data-bind="click: hideModal"></div>
+      <div class="modal-box">
+        <p>For April Fools of 2014, Google challenged iPhone and Android users 
+        to find 150 Pokémon that were hidden all across its map.</p>
+
+        <p>This Google PokéMap shows a compilation of locations put together by 
+        users on Reddit, from a list that contained only one position per 
+        Pokémon. The displayed data for each Pokémon is from the PokéAPI.</p>
+      </div>
+    </div>
 
     <!-- Scripts -->
     <script src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>

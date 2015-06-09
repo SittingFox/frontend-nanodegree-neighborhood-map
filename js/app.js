@@ -1050,7 +1050,7 @@ var NeighborhoodViewModel = {
           '<!-- ko with: currentPokemon -->' +
             '<header>' +
             '<h2 class="iw-title" data-bind="text: name"></h2>' +
-            '<span class="iw-number" data-bind="text: $parent.formatNumber(number)"></span>' +
+              '<span class="iw-number" data-bind="text: $parent.formatNumber(number)"></span>' +
             '</header>' +
             '<div class="iw-top">' +
               '<div class="iw-image-holder">' +
@@ -1137,6 +1137,7 @@ var NeighborhoodViewModel = {
    */
 
   drawer: document.querySelector('.drawer'),
+  modal: document.querySelector('.modal'),
   scrollBox: document.querySelector('.location-holder'),
 
   // Toggles opening and closing of drawer on button click
@@ -1157,8 +1158,17 @@ var NeighborhoodViewModel = {
    */
   hideDrawer: function (data, event) {  
     var self = this;
-    
     self.drawer.classList.remove('open');
+  },
+
+  showModal: function() {
+    var self = this;
+    self.modal.classList.remove('hide');
+  },
+
+  hideModal: function() {
+    var self = this;
+    self.modal.classList.add('hide');
   },
 
   formatNumber: function(number) {

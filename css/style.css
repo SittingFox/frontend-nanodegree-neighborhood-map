@@ -15,16 +15,25 @@ html, body {
 /* Mobile top area */
 .topper {
   background-color: #f53c24;
+  color: white;
+  display: flex;
+  flex-wrap: wrap;
   height: 48px;
+  line-height: 48px;
   text-align: right;
 }
 
+h1 {
+  font-size: 1.5em;
+  margin: 0;
+  text-align: center;
+  width: calc(100% - 96px);
+}
+
+.about,
 .hamburger {
-  color: #fff;
-  display: inline-block;
   font-size: 1.8em;
   height: 48px;
-  line-height: 48px;
   text-align: center;
   width: 48px;
 }
@@ -80,6 +89,35 @@ html, body {
   padding: 24px;
   text-align: left;
   width: 100%;
+}
+
+/* Modal */
+.modal-overlay {
+  background-color: black;
+  height: 100%;
+  left: 0;
+  opacity: 0.5;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 20;
+}
+
+.modal-box {
+  background-color: white;
+  color: black;
+  height: 250px;
+  left: calc(50% - 150px);
+  padding: 0 10px;
+  position: absolute;
+  text-align: justify;
+  top: calc(50% - 125px);
+  width: 300px;
+  z-index: 21;
+}
+
+.modal.hide {
+  visibility: hidden;
 }
 
 /* Map */
