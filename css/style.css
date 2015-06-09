@@ -93,7 +93,12 @@ html, body {
   width: 300px;
 }
 
+.iw-header {
+  margin: 0;
+}
+
 .iw-top {
+  padding-bottom: 5px;
   width: 100%;
 }
 

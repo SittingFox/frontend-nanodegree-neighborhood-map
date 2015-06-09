@@ -23,8 +23,9 @@ var model = {
     var self = this; 
 
     var pokemon;
-    self.pokemonData.forEach( function(data) {
-      pokemon = new self.Pokemon(data, NeighborhoodViewModel.map, function(thisPokemon) {
+    var number = 1;
+    self.pokemonData.forEach( function(data, index) {
+      pokemon = new self.Pokemon(data, index+1, NeighborhoodViewModel.map, function(thisPokemon) {
           self.onMarkerClick(thisPokemon);
         });   
       
@@ -38,11 +39,12 @@ var model = {
    * @param object pokemon - Pokemon data, holding a name and map coordinates
    * @param google.maps.Map map - Our Google Map
    */
-  Pokemon: function(pokemon, map, onClick) {
+  Pokemon: function(pokemon, number, map, onClick) {
     var self = this;
 
     self.map = map;
     self.name = pokemon.name;
+    self.number = number;
     self.position = new google.maps.LatLng(pokemon.lat, pokemon.lon);
     self.isVisible = ko.observable(true);
 
@@ -1046,6 +1048,7 @@ var NeighborhoodViewModel = {
       '<div id="info-window">' +
         '<!-- ko ifnot: errorLoad -->' +
           '<!-- ko with: currentPokemon -->' +
+            '<h2 class="iw-header" data-bind="text: $parent.getLabel(name, number)"></h2>' +
             '<div class="iw-top">' +
               '<div class="iw-image-holder">' +
                 '<img class="iw-image" data-bind="attr: {src: image, alt: name}">' +
@@ -1153,6 +1156,20 @@ var NeighborhoodViewModel = {
     var self = this;
     
     self.drawer.classList.remove('open');
+  },
+
+  getLabel: function (name, number) {
+    var formatNumber;
+
+    if (number < 10) {
+      formatNumber = "00" + number;
+    } else if (number < 100) {
+      formatNumber = "0" + number;
+    } else {
+      formatNumber = number;
+    }
+
+    return formatNumber + " " + name;
   },
 
   getStatPercentage: function(stat) {
