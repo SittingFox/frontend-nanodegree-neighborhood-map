@@ -30,7 +30,13 @@
       </div>
     </div>
 
-    <div id="map-canvas" data-bind="click: hideDrawer"></div>
+    <div id="map-canvas" data-bind="click: hideDrawer">
+      <section class="map-error" data-bind="visible: !isGoogleWorking" style="display:none">
+        <h2>Sorry! Can't load map!</h2>
+
+        <p class="text-error">Are you sure you're connected to the internet?</p>
+      </section>
+    </div>
 
     <div class="modal hide">
       <div class="modal-overlay" data-bind="click: hideModal"></div>
@@ -45,7 +51,7 @@
     </div>
 
     <!-- Scripts -->
-    <script src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
     <script src="js/lib/knockout-3.3.0.js"></script>
     <script src="js/app.js"></script>
 

@@ -1020,6 +1020,8 @@ var NeighborhoodViewModel = {
       self.search(newValue);
     });
 
+    self.isGoogleWorking = (typeof google !== 'undefined');
+
     /**
      * Initialize
      * Set up any functions needed, and then get initializing
@@ -1043,49 +1045,51 @@ var NeighborhoodViewModel = {
 
     
     // Initializing
-    self.map = mapInitialize();
-    var infoWindowHTML =
-      '<section id="info-window">' +
-        '<!-- ko ifnot: errorLoad -->' +
-          '<!-- ko with: currentPokemon -->' +
-            '<header>' +
-            '<h2 class="iw-title" data-bind="text: name"></h2>' +
-              '<span class="iw-number" data-bind="text: $parent.formatNumber(number)"></span>' +
-            '</header>' +
-            '<div class="iw-top">' +
-              '<div class="iw-image-holder">' +
-                '<img class="iw-image" data-bind="attr: {src: image, alt: name}">' +
+    if ( self.isGoogleWorking ) {
+      self.map = mapInitialize();
+      var infoWindowHTML =
+        '<section id="info-window">' +
+          '<!-- ko ifnot: errorLoad -->' +
+            '<!-- ko with: currentPokemon -->' +
+              '<header>' +
+              '<h2 class="iw-title" data-bind="text: name"></h2>' +
+                '<span class="iw-number" data-bind="text: $parent.formatNumber(number)"></span>' +
+              '</header>' +
+              '<div class="iw-top">' +
+                '<div class="iw-image-holder">' +
+                  '<img class="iw-image" data-bind="attr: {src: image, alt: name}">' +
+                '</div>' +
+                '<ul class="iw-stat-list" data-bind="foreach: stats">' +
+                    '<li class="iw-stat-item">' +
+                      '<div class="iw-stat-name" data-bind="text: name"></div>' +
+                      '<div class="iw-stat-number" data-bind="text: value"></div>' +
+                      '<div class="iw-stat-bar">' +
+                        '<div class="iw-stat-fill" data-bind="style: {width: $root.getStatPercentage(value), backgroundColor: \'red\'}">&nbsp;</div>' +
+                      '</div>' +
+                    '</li>' +
+                '</ul>' +
               '</div>' +
-              '<ul class="iw-stat-list" data-bind="foreach: stats">' +
-                //'<!-- ko foreach: stats -->' +
-                  '<li class="iw-stat-item">' +
-                    '<div class="iw-stat-name" data-bind="text: name"></div>' +
-                    '<div class="iw-stat-number" data-bind="text: value"></div>' +
-                    '<div class="iw-stat-bar">' +
-                      '<div class="iw-stat-fill" data-bind="style: {width: $root.getStatPercentage(value), backgroundColor: \'red\'}">&nbsp;</div>' +
-                    '</div>' +
-                  '</li>' +
-                //'<!-- /ko -->' +
-              '</ul>' +
-            '</div>' +
-            '<div class="iw-description" data-bind="text: description"></div>' +
+              '<p class="iw-description" data-bind="text: description"></p>' +
+            '<!-- /ko -->' +
           '<!-- /ko -->' +
-        '<!-- /ko -->' +
-        '<!-- ko if: errorLoad -->' +
-          'Error loading' +
-        '<!-- /ko -->' +
-      '</section>';
-    self.infoWindow = new google.maps.InfoWindow({content: infoWindowHTML});
-    var isInfoWindowLoaded = false;
-    google.maps.event.addListener(self.infoWindow, 'domready', function () {
-      if (!isInfoWindowLoaded)
-      {
-        ko.applyBindings( self, document.getElementById("info-window") );
-        isInfoWindowLoaded = true;
-      }
-    });
+          '<!-- ko if: errorLoad -->' +
+            '<h2 class="iw-title">Unable to Load</h2>' +
+            '<p class="text-error">Are you connected to the internet?</p>' +
+          '<!-- /ko -->' +
+        '</section>';
+      self.infoWindow = new google.maps.InfoWindow({content: infoWindowHTML});
+      var isInfoWindowLoaded = false;
+      google.maps.event.addListener(self.infoWindow, 'domready', function () {
+        if (!isInfoWindowLoaded)
+        {
+          ko.applyBindings( self, document.getElementById("info-window") );
+          isInfoWindowLoaded = true;
+        }
+      });
 
-    model.init();
+      model.init();
+    }
+
     ko.applyBindings(self);
 
   }, // end of init
