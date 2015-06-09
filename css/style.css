@@ -93,12 +93,19 @@ html, body {
   width: 300px;
 }
 
-.iw-header {
+.iw-title {
   margin: 0;
+  text-align: center;
+}
+
+.iw-number {
+  font-size: 1.1em;
+  position: absolute;
+  top: 0;
 }
 
 .iw-top {
-  padding-bottom: 5px;
+  padding: 5px 0;
   width: 100%;
 }
 
@@ -129,6 +136,7 @@ img.iw-image {
 }
 
 .iw-stat-name {
+  font-weight: bold;
   padding-left: 5px;
   width: 15%;
 }

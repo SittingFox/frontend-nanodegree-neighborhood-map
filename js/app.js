@@ -1045,10 +1045,13 @@ var NeighborhoodViewModel = {
     // Initializing
     self.map = mapInitialize();
     var infoWindowHTML =
-      '<div id="info-window">' +
+      '<section id="info-window">' +
         '<!-- ko ifnot: errorLoad -->' +
           '<!-- ko with: currentPokemon -->' +
-            '<h2 class="iw-header" data-bind="text: $parent.getLabel(name, number)"></h2>' +
+            '<header>' +
+            '<h2 class="iw-title" data-bind="text: name"></h2>' +
+            '<span class="iw-number" data-bind="text: $parent.formatNumber(number)"></span>' +
+            '</header>' +
             '<div class="iw-top">' +
               '<div class="iw-image-holder">' +
                 '<img class="iw-image" data-bind="attr: {src: image, alt: name}">' +
@@ -1071,7 +1074,7 @@ var NeighborhoodViewModel = {
         '<!-- ko if: errorLoad -->' +
           'Error loading' +
         '<!-- /ko -->' +
-      '</div>';
+      '</section>';
     self.infoWindow = new google.maps.InfoWindow({content: infoWindowHTML});
     var isInfoWindowLoaded = false;
     google.maps.event.addListener(self.infoWindow, 'domready', function () {
@@ -1158,18 +1161,25 @@ var NeighborhoodViewModel = {
     self.drawer.classList.remove('open');
   },
 
-  getLabel: function (name, number) {
-    var formatNumber;
+  formatNumber: function(number) {
+    var formattedNumber;
 
     if (number < 10) {
-      formatNumber = "00" + number;
+      formattedNumber = "00" + number;
     } else if (number < 100) {
-      formatNumber = "0" + number;
+      formattedNumber = "0" + number;
     } else {
-      formatNumber = number;
+      formattedNumber = number;
     }
 
-    return formatNumber + " " + name;
+    return formattedNumber;
+  },
+
+  getLabel: function (name, number) {
+    var self = this;
+    var formattedNumber = self.formatNumber(number);
+
+    return formattedNumber + " " + name;
   },
 
   getStatPercentage: function(stat) {
