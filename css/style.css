@@ -129,14 +129,15 @@ h1 {
 
 /* Info Window */
 #info-window {
+  overflow:hidden;
   position: relative;
   text-align: center;
+  white-space:nowrap;
   width: 300px;
 }
 
 .iw-title {
   margin: 0;
-  text-align: center;
 }
 
 .iw-number {
@@ -212,7 +213,6 @@ img.iw-image {
   line-height: 50px;
   margin: 0;
   position: absolute;
-  text-align: center;
   top: calc(50% - 25px);
   width: 200px;
   z-index: 10;
@@ -269,5 +269,4 @@ img.iw-image {
 
 .text-error {
   font-size: 1.2em;
-  text-align: center;
 }
