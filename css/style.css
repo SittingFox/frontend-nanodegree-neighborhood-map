@@ -127,7 +127,10 @@ h1 {
   padding: 0;
 }
 
+/* Info Window */
 #info-window {
+  position: relative;
+  text-align: center;
   width: 300px;
 }
 
@@ -138,6 +141,7 @@ h1 {
 
 .iw-number {
   font-size: 1.1em;
+  left: 0;
   position: absolute;
   top: 0;
 }
@@ -176,6 +180,7 @@ img.iw-image {
 .iw-stat-name {
   font-weight: bold;
   padding-left: 5px;
+  text-align: left;
   width: 15%;
 }
 
@@ -197,6 +202,63 @@ img.iw-image {
 .iw-description {
   font-size: 1.1em;
   margin: 0;
+  text-align: justify;;
+}
+
+.iw-loading-title {
+  font-size: 3em;
+  height: 50px;
+  left: calc(50% - 100px);
+  line-height: 50px;
+  margin: 0;
+  position: absolute;
+  text-align: center;
+  top: calc(50% - 25px);
+  width: 200px;
+  z-index: 10;
+}
+
+.iw-loading-image {
+    height: 150px;
+    width: 150px;
+    
+    -webkit-animation-name: spin;
+    -webkit-animation-duration: 2000ms;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+    -moz-animation-name: spin;
+    -moz-animation-duration: 2000ms;
+    -moz-animation-iteration-count: infinite;
+    -moz-animation-timing-function: linear;
+    -ms-animation-name: spin;
+    -ms-animation-duration: 2000ms;
+    -ms-animation-iteration-count: infinite;
+    -ms-animation-timing-function: linear;
+    
+    animation-name: spin;
+    animation-duration: 2000ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+@-ms-keyframes spin {
+    from { -ms-transform: rotate(0deg); }
+    to { -ms-transform: rotate(360deg); }
+}
+@-moz-keyframes spin {
+    from { -moz-transform: rotate(0deg); }
+    to { -moz-transform: rotate(360deg); }
+}
+@-webkit-keyframes spin {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
+}
+@keyframes spin {
+    from {
+        transform:rotate(0deg);
+    }
+    to {
+        transform:rotate(360deg);
+    }
 }
 
 /* Error Handling */

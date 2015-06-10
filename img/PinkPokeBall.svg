@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created by SittingFox with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="158"
+   height="158"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="SmashPokeBall1.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.979899"
+     inkscape:cx="-126.24031"
+     inkscape:cy="43.760251"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer4"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1364"
+     inkscape:window-height="693"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:groupmode="layer"
+     id="layer4"
+     inkscape:label="Layer#2"
+     style="display:inline"
+     transform="translate(0,-92)">
+    <g
+       id="g3031"
+       transform="translate(-46,46)"
+       style="fill:#f5b8c2;fill-opacity:1">
+      <path
+         inkscape:connector-curvature="0"
+         id="path2997"
+         d="M 125,46 C 84.757085,46 51.540181,76.091024 46.625,115 l 41.71875,0 C 92.733659,98.864881 107.47424,87 125,87 c 17.52576,0 32.26634,11.864881 36.65625,28 l 41.71875,0 C 198.45982,76.091024 165.24291,46 125,46 z m -78.375,89 c 4.915181,38.90898 38.132085,69 78.375,69 40.24291,0 73.45982,-30.09102 78.375,-69 l -41.71875,0 C 157.26634,151.13512 142.52576,163 125,163 107.47424,163 92.733659,151.13512 88.34375,135 L 46.625,135 z"
+         style="fill:#f5b8c2;fill-rule:evenodd;stroke:none;display:inline;fill-opacity:1" />
+      <path
+         transform="matrix(1.1983599,0,0,1.1983599,-36.302633,-22.366295)"
+         d="m 153.79573,122.97332 c 0,10.59994 -8.59296,19.1929 -19.1929,19.1929 -10.59995,0 -19.1929,-8.59296 -19.1929,-19.1929 0,-10.59994 8.59295,-19.1929 19.1929,-19.1929 10.59994,0 19.1929,8.59296 19.1929,19.1929 z"
+         sodipodi:ry="19.192898"
+         sodipodi:rx="19.192898"
+         sodipodi:cy="122.97332"
+         sodipodi:cx="134.60283"
+         id="path3003"
+         style="fill:#f5b8c2;fill-rule:evenodd;stroke:none;fill-opacity:1"
+         sodipodi:type="arc" />
+    </g>
+  </g>
+</svg>

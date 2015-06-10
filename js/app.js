@@ -1048,9 +1048,10 @@ var NeighborhoodViewModel = {
     if ( self.isGoogleWorking ) {
       self.map = mapInitialize();
       var infoWindowHTML =
-        '<section id="info-window">' +
+        '<div id="info-window">' +
           '<!-- ko ifnot: errorLoad -->' +
             '<!-- ko with: currentPokemon -->' +
+            '<!-- ko if: hasData -->' +
               '<header>' +
               '<h2 class="iw-title" data-bind="text: name"></h2>' +
                 '<span class="iw-number" data-bind="text: $parent.formatNumber(number)"></span>' +
@@ -1070,13 +1071,18 @@ var NeighborhoodViewModel = {
                 '</ul>' +
               '</div>' +
               '<p class="iw-description" data-bind="text: description"></p>' +
+              '<!-- /ko -->' +
+              '<!-- ko ifnot: hasData -->' + 
+                '<h2 class="iw-loading-title">Loading</h2>' +
+                '<img class="iw-loading-image" src="img/PinkPokeBall.svg">' +
+              '<!-- /ko -->' +
             '<!-- /ko -->' +
           '<!-- /ko -->' +
           '<!-- ko if: errorLoad -->' +
             '<h2 class="iw-title">Unable to Load</h2>' +
             '<p class="text-error">Are you connected to the internet?</p>' +
           '<!-- /ko -->' +
-        '</section>';
+        '</div>';
       self.infoWindow = new google.maps.InfoWindow({content: infoWindowHTML});
       var isInfoWindowLoaded = false;
       google.maps.event.addListener(self.infoWindow, 'domready', function () {
