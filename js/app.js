@@ -1067,7 +1067,7 @@ var NeighborhoodViewModel = {
                       '<div class="iw-stat-name" data-bind="text: name"></div>' +
                       '<div class="iw-stat-number" data-bind="text: value"></div>' +
                       '<div class="iw-stat-bar">' +
-                        '<div class="iw-stat-fill" data-bind="style: {width: $root.getStatPercentage(value), backgroundColor: \'red\'}">&nbsp;</div>' +
+                        '<div class="iw-stat-fill" data-bind="style: {width: $root.getStatPercentage(value)}">&nbsp;</div>' +
                       '</div>' +
                     '</li>' +
                 '</ul>' +

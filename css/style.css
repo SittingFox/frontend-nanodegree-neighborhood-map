@@ -140,7 +140,9 @@ h1 {
 }
 
 .iw-number {
+  color: #9f9f9f;
   font-size: 1.1em;
+  font-weight: bold;
   left: 0;
   position: absolute;
   top: 0;
@@ -194,7 +196,7 @@ img.iw-image {
 }
 
 .iw-stat-bar {
-  background-color: pink;
+  background-color: #f5b8c2;
   width: 70%;
 }
 
