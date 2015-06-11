@@ -13,6 +13,7 @@
 var model = {
   apiBaseURL: "http://pokeapi.co",
   apiPokemonSearchURL: "http://pokeapi.co/api/v1/pokemon/",
+  streetViewURL: "http://maps.googleapis.com/maps/api/streetview?size=200x201&location=",
   allPokemon: ko.observableArray(),
 
   /**
@@ -25,7 +26,7 @@ var model = {
     var pokemon;
     var number = 1;
     self.pokemonData.forEach( function(data, index) {
-      pokemon = new self.Pokemon(data, index+1, NeighborhoodViewModel.map, function(thisPokemon) {
+      pokemon = new self.Pokemon(data, index+1, NeighborhoodViewModel.map, self.streetViewURL, function(thisPokemon) {
           self.onMarkerClick(thisPokemon);
         });   
       
@@ -39,13 +40,14 @@ var model = {
    * @param object pokemon - Pokemon data, holding a name and map coordinates
    * @param google.maps.Map map - Our Google Map
    */
-  Pokemon: function(pokemon, number, map, onClick) {
+  Pokemon: function(pokemon, number, map, streetViewURL, onClick) {
     var self = this;
 
     self.map = map;
     self.name = pokemon.name;
     self.number = number;
     self.position = new google.maps.LatLng(pokemon.lat, pokemon.lon);
+    self.streetView = streetViewURL + pokemon.lat + "," + pokemon.lon;
     self.isVisible = ko.observable(true);
 
     self.stats = ko.observableArray();
@@ -1057,7 +1059,7 @@ var NeighborhoodViewModel = {
                 '<span class="iw-number" data-bind="text: $parent.formatNumber(number)"></span>' +
               '</header>' +
               '<div class="iw-top">' +
-                '<div class="iw-image-holder">' +
+                '<div class="iw-image-holder" data-bind="style: { backgroundImage: $parent.getStreetView(streetView) }">' +
                   '<img class="iw-image" data-bind="attr: {src: image, alt: name}">' +
                 '</div>' +
                 '<ul class="iw-stat-list" data-bind="foreach: stats">' +
@@ -1205,6 +1207,10 @@ var NeighborhoodViewModel = {
   getStatPercentage: function(stat) {
     var calc = (stat / 255) * 100;
     return calc + '%';
+  },
+
+  getStreetView: function(streetView) {
+    return "url('" + streetView + "')";
   }
 
 }; // end of NeighborhoodViewModel
