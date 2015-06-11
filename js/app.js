@@ -160,7 +160,7 @@ var model = {
        * image.
        */
       if ( pokemon.name == "Meowstic (Female)") {
-        pokemon.image("http://img.pokemondb.net/sprites/x-y/normal/meowstic-f.png");
+        pokemon.image("img/meowstic-female.png");
       } else {
         var spritesData = data.sprites.shift();
         var url = model.apiBaseURL + spritesData.resource_uri;
@@ -811,7 +811,7 @@ var model = {
       lon: -122.4245827
     },
     {
-      name: "Confagrigus",
+      name: "Cofagrigus",
       lat: 45.514651,
       lon: 25.369125
     },
