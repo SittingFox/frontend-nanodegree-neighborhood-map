@@ -190,7 +190,19 @@ var model = {
     }
 
     function setupDescription(data) {
-      pokemon.description(data.description);
+      var description = data.description;
+
+      /**
+       * The descriptions seem to have some missing characters, making for
+       * typos. It's kind of annoying, so let's see if I can fix some at least.
+       */
+      description = description.replace("cant", "can't");
+      description = description.replace("isnt", "isn't");
+      description = description.replace("Pokmons", "Pokémon's");
+      description = description.replace(/Pokmon/g, "Pokémon");
+      description = description.replace("wont", "won't");
+
+      pokemon.description(description);
     }
 
     function errorLoad() {
