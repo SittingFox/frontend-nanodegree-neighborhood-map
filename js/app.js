@@ -13,6 +13,7 @@
 var model = {
   apiBaseURL: "http://pokeapi.co",
   apiPokemonSearchURL: "http://pokeapi.co/api/v1/pokemon/",
+  markerImage: "img/PokeMarker.png",
   streetViewURL: "http://maps.googleapis.com/maps/api/streetview?size=200x201&location=",
   allPokemon: ko.observableArray(),
 
@@ -26,7 +27,7 @@ var model = {
     var pokemon;
     var number = 1;
     self.pokemonData.forEach( function(data, index) {
-      pokemon = new self.Pokemon(data, index+1, NeighborhoodViewModel.map, self.streetViewURL, function(thisPokemon) {
+      pokemon = new self.Pokemon(data, index+1, NeighborhoodViewModel.map, self.streetViewURL, self.markerImage, function(thisPokemon) {
           self.onMarkerClick(thisPokemon);
         });   
       
@@ -40,7 +41,7 @@ var model = {
    * @param object pokemon - Pokemon data, holding a name and map coordinates
    * @param google.maps.Map map - Our Google Map
    */
-  Pokemon: function(pokemon, number, map, streetViewURL, onClick) {
+  Pokemon: function(pokemon, number, map, streetViewURL, markerImage, onClick) {
     var self = this;
 
     self.map = map;
@@ -59,8 +60,9 @@ var model = {
     });
 
     self.marker = new google.maps.Marker({
-      position: self.position,
+      icon: markerImage,
       map: self.map,
+      position: self.position,
       title: self.name
     });
 
@@ -76,6 +78,14 @@ var model = {
       self.isVisible(false);
     };
 
+    // Makes marker bounce once
+    self.bounce = function() {
+      self.marker.setAnimation(google.maps.Animation.BOUNCE);
+      setTimeout(function() {
+        self.marker.setAnimation(null);
+      }, 750);
+    };
+
     google.maps.event.addListener(self.marker, 'click', function() {
       onClick(self);
     });
@@ -88,6 +98,7 @@ var model = {
    */
   onMarkerClick: function(pokemon) {
     NeighborhoodViewModel.onMarkerClick(pokemon);
+    pokemon.bounce();
     NeighborhoodViewModel.errorLoad(false);
 
     if (!pokemon.hasData()) {
