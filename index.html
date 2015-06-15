@@ -9,7 +9,9 @@
   </head>
 
   <body>
-    <div class="topper" data-bind="click: hideDrawer">
+
+    <!-- Top bar -->
+    <header class="header" data-bind="click: hideDrawer">
       <a class="about" data-bind="click: showModal, clickBubble: false">
         ?
       </a>
@@ -17,8 +19,10 @@
       <a class="hamburger" data-bind="click: toggleDrawer, clickBubble: false">
         ☰
       </a>
-    </div>
+    </header>
+
     <main class="container">
+      <!-- Drawer, which pops in and out on small screens -->
       <div class="drawer" data-bind="click: null, clickBubble: false">
         <div class="search-holder">
           <input class="search-box" placeholder="Search" data-bind="textInput: searchText">
@@ -29,7 +33,9 @@
           </ul>
         </div>
       </div>
+      <!-- Area for Google Map -->
       <div class="map-canvas" data-bind="click: hideDrawer">
+        <!-- Display when error loading map -->
         <section class="map-error" data-bind="visible: !isGoogleWorking" style="display:none">
           <h2>Sorry! Can't load map!</h2>
 
@@ -38,7 +44,8 @@
       </div>
     </main>
 
-    <div class="modal hide">
+    <!-- Modal with "about" info -->
+    <aside class="modal hide">
       <div class="modal-overlay" data-bind="click: hideModal"></div>
       <div class="modal-box">
         <p>For April Fools of 2014, Google challenged iPhone and Android users
@@ -48,7 +55,7 @@
         users on Reddit, from a list that contained only one position per
         Pokémon. The displayed data for each Pokémon is from the PokéAPI.</p>
       </div>
-    </div>
+    </aside>
 
     <!-- Scripts -->
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>

@@ -20,7 +20,7 @@ input {
 
 
 /* Top bar area */
-.topper {
+.header {
   background-color: #f53c24;
   color: white;
   display: flex;
