@@ -1144,6 +1144,7 @@ var NeighborhoodViewModel = {
   onMarkerClick: function(pokemon) {
     var self = this;
 
+    self.hideDrawer();
     self.map.panTo(pokemon.position);
 
     /**
