@@ -1,18 +1,25 @@
-/* Whole document */
-* {
+/* Base document settings */
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+
+body,
+div,
+input {
   -moz-box-sizing: border-box;
   -ms-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
 }
 
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
 
-/* Mobile top area */
+
+/* Top bar area */
 .topper {
   background-color: #f53c24;
   color: white;
@@ -23,12 +30,14 @@ html, body {
   text-align: right;
 }
 
+
 h1 {
   font-size: 1.5em;
   margin: 0;
   text-align: center;
   width: calc(100% - 96px);
 }
+
 
 .about,
 .hamburger {
@@ -38,11 +47,14 @@ h1 {
   width: 48px;
 }
 
+
 @media screen and (min-width: 600px) {
   .hamburger {
     display: none;
   }
 }
+
+
 
 /* Whole main area */
 .container {
@@ -53,6 +65,8 @@ h1 {
   width: 100%;
 }
 
+
+
 /* Drawer */
 
 .drawer {
@@ -60,6 +74,7 @@ h1 {
   height: 100%;
   width: 250px;
 }
+
 
 @media screen and (max-width: 599px) {
   .drawer {
@@ -71,11 +86,13 @@ h1 {
     z-index: 10;
   }
 
+
   .drawer.open {
     -webkit-transform: translate(0, 0);
     transform: translate(0, 0);
   }
 }
+
 
 @media screen and (min-width: 600px) and (max-width: 799px) {
   .drawer {
@@ -83,11 +100,13 @@ h1 {
   }
 }
 
+
 .search-holder
 {
   height: 48px;
   padding: 5px;
 }
+
 
 .search-box {
   font-size: 24px;
@@ -96,10 +115,12 @@ h1 {
   width: 100%;
 }
 
+
 .location-holder {
   height: calc(100% - 48px);
   overflow-y: scroll;
 }
+
 
 .location-list {
   list-style: none;
@@ -108,8 +129,9 @@ h1 {
   margin: 0;
 }
 
+
 .location-item {
-  border-bottom: 1px solid #E0E0E0;
+  border-bottom: 1px solid #e0e0e0;
   box-sizing: border-box;
   display: list-item;
   line-height: 24px;
@@ -118,44 +140,53 @@ h1 {
   width: 100%;
 }
 
+
+
 /* Map */
-#map-canvas {
+.map-canvas {
   height: 100%;
   margin: 0;
   padding: 0;
   width: calc(100% - 250px);
 }
 
+
 @media screen and (max-width: 599px) {
-  #map-canvas {
+  .map-canvas {
     width: 100%;
   }
 }
 
+
 @media screen and (min-width: 600px) and (max-width: 799px) {
-  #map-canvas {
+  .map-canvas {
     width: calc(100% - 210px);
   }
 }
 
+
+
 /* Info Window */
-#info-window {
+.info-window {
   overflow:hidden;
   position: relative;
   text-align: center;
   width: 300px;
 }
 
+
 /* Making the info window fit on smaller screens */
 @media screen and (max-width: 360px) {
-  #info-window {
+  .info-window {
     width: 250px;
   }
 }
 
+
 .iw-title {
   margin: 0;
 }
+
 
 .iw-number {
   color: #9f9f9f;
@@ -166,10 +197,12 @@ h1 {
   top: 0;
 }
 
+
 .iw-top {
   padding: 5px 0;
   width: 100%;
 }
+
 
 .iw-image-holder {
   background-position: 100px 100px;
@@ -180,11 +213,13 @@ h1 {
   width: 100px;
 }
 
+
 img.iw-image {
   max-height: 100px;
   width: 100px;
   vertical-align: middle;
 }
+
 
 .iw-stat-list {
   display: inline-block;
@@ -194,11 +229,13 @@ img.iw-image {
   width: 200px;
 }
 
+
 .iw-stat-item {
   display: flex;
   flex-wrap: wrap;
   padding-bottom: 1px;
 }
+
 
 .iw-stat-name {
   font-weight: bold;
@@ -207,16 +244,19 @@ img.iw-image {
   width: 15%;
 }
 
+
 .iw-stat-number {
   padding-right: 5px;
   text-align: right;
   width: 15%;
 }
 
+
 .iw-stat-bar {
   background-color: #f5b8c2;
   width: 70%;
 }
+
 
 /* Making the info window fit on smaller screens */
 @media screen and (max-width: 360px) {
@@ -224,28 +264,34 @@ img.iw-image {
     width: 150px;
   }
 
+
   .iw-stat-name {
     width: 20%;
   }
 
+
   .iw-stat-number {
     width: 20%;
   }
+
 
   .iw-stat-bar {
     width: 60%;
   }
 }
 
+
 .iw-stat-fill {
   background-color: #f53c24;
 }
+
 
 .iw-description {
   font-size: 1.1em;
   margin: 0;
   text-align: justify;;
 }
+
 
 .iw-loading-title {
   font-size: 3em;
@@ -259,10 +305,10 @@ img.iw-image {
   z-index: 10;
 }
 
-.iw-loading-image {
-  height: 150px;
-  width: 150px;
 
+
+/* Spinning loading image */
+.iw-loading-image {
   -webkit-animation-name: spin;
   -webkit-animation-duration: 2000ms;
   -webkit-animation-iteration-count: infinite;
@@ -275,24 +321,37 @@ img.iw-image {
   -ms-animation-duration: 2000ms;
   -ms-animation-iteration-count: infinite;
   -ms-animation-timing-function: linear;
-
   animation-name: spin;
   animation-duration: 2000ms;
   animation-iteration-count: infinite;
   animation-timing-function: linear;
+
+  /* regular settings*/
+  height: 150px;
+  width: 150px;
 }
+
+
+/* Continue setup for spinning image */
+
 @-ms-keyframes spin {
   from { -ms-transform: rotate(0deg); }
   to { -ms-transform: rotate(360deg); }
 }
+
+
 @-moz-keyframes spin {
   from { -moz-transform: rotate(0deg); }
   to { -moz-transform: rotate(360deg); }
 }
+
+
 @-webkit-keyframes spin {
   from { -webkit-transform: rotate(0deg); }
   to { -webkit-transform: rotate(360deg); }
 }
+
+
 @keyframes spin {
   from {
       transform:rotate(0deg);
@@ -302,15 +361,20 @@ img.iw-image {
   }
 }
 
+
+
 /* Error Handling */
 .map-error {
   text-align: center;
   padding-top: 100px;
 }
 
+
 .text-error {
   font-size: 1.2em;
 }
+
+
 
 /* Modal */
 .modal-overlay {
@@ -324,6 +388,7 @@ img.iw-image {
   z-index: 20;
 }
 
+
 .modal-box {
   background-color: white;
   color: black;
@@ -336,6 +401,7 @@ img.iw-image {
   width: 300px;
   z-index: 21;
 }
+
 
 .modal.hide {
   display: none;

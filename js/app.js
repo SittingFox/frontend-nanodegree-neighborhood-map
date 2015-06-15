@@ -1,4 +1,4 @@
-/** 
+/**
  * Creates interactive neighborhood map, with list and search box
  * @author SittingFox
  * @required knockout.js
@@ -18,19 +18,19 @@ var model = {
   allPokemon: ko.observableArray(),
 
   /**
-   * Turn Pokemon name and coordinates into Pokemon object with map marker and 
+   * Turn Pokemon name and coordinates into Pokemon object with map marker and
    * add to array
    */
   init: function () {
-    var self = this; 
+    var self = this;
 
     var pokemon;
     var number = 1;
     self.pokemonData.forEach( function(data, index) {
       pokemon = new self.Pokemon(data, index+1, NeighborhoodViewModel.map, self.streetViewURL, self.markerImage, function(thisPokemon) {
           self.onMarkerClick(thisPokemon);
-        });   
-      
+        });
+
       self.allPokemon.push(pokemon);
     });
 
@@ -175,7 +175,7 @@ var model = {
       } else {
         var spritesData = data.sprites.shift();
         var url = model.apiBaseURL + spritesData.resource_uri;
-        
+
         getJSON(url, setupSprite, errorLoad);
       }
 
@@ -1040,7 +1040,7 @@ var NeighborhoodViewModel = {
     self.getPokemon = ko.computed(function() {
       return model.allPokemon();
     });
-    
+
     self.searchText.subscribe( function (newValue) {
       self.search(newValue);
     });
@@ -1055,9 +1055,9 @@ var NeighborhoodViewModel = {
     /**
      * Creates Google Map
      * @return google.maps.Map - Google Map object
-     */  
+     */
     function mapInitialize() {
-        var mapElement = document.getElementById('map-canvas');
+        var mapElement = document.getElementsByClassName('map-canvas')[0];
         var googleplex = new google.maps.LatLng(37.422,-122.084058);
         var mapOptions = {
           center: googleplex,
@@ -1068,12 +1068,12 @@ var NeighborhoodViewModel = {
         return ( new google.maps.Map(mapElement, mapOptions) );
     }
 
-    
+
     // Initializing
     if ( self.isGoogleWorking ) {
       self.map = mapInitialize();
       var infoWindowHTML =
-        '<div id="info-window">' +
+        '<div class="info-window">' +
           '<!-- ko ifnot: errorLoad -->' +
             '<!-- ko with: currentPokemon -->' +
             '<!-- ko if: hasData -->' +
@@ -1097,7 +1097,7 @@ var NeighborhoodViewModel = {
               '</div>' +
               '<p class="iw-description" data-bind="text: description"></p>' +
               '<!-- /ko -->' +
-              '<!-- ko ifnot: hasData -->' + 
+              '<!-- ko ifnot: hasData -->' +
                 '<h2 class="iw-loading-title">Loading</h2>' +
                 '<img class="iw-loading-image" src="img/PinkPokeBall.svg">' +
               '<!-- /ko -->' +
@@ -1113,7 +1113,7 @@ var NeighborhoodViewModel = {
       google.maps.event.addListener(self.infoWindow, 'domready', function () {
         if (!isInfoWindowLoaded)
         {
-          ko.applyBindings( self, document.getElementById("info-window") );
+          ko.applyBindings( self, document.getElementsByClassName("info-window")[0] );
           isInfoWindowLoaded = true;
         }
       });
@@ -1179,7 +1179,7 @@ var NeighborhoodViewModel = {
   // Toggles opening and closing of drawer on button click
   toggleDrawer: function() {
     var self = this;
-    
+
     if ( self.drawer.classList.contains('open') ) {
       self.scrollBox.scrollTop = 0;  // scroll back to top
     }
@@ -1192,7 +1192,7 @@ var NeighborhoodViewModel = {
    * @param object data - The NeighborhoodViewModel object
    * @param MouseEvent event - Click information
    */
-  hideDrawer: function (data, event) {  
+  hideDrawer: function (data, event) {
     var self = this;
     self.drawer.classList.remove('open');
   },
@@ -1234,7 +1234,7 @@ var NeighborhoodViewModel = {
   },
 
   getStreetView: function(streetView) {
-    return "url('" + streetView + "')";
+    return "url(" + streetView + ")";
   }
 
 }; // end of NeighborhoodViewModel
