@@ -6,30 +6,45 @@
 
 "use strict";
 
+
 /**
- * The Model
- * Holder of data
+ * The Model is the holder of data
+ * @type {Object}
  */
 var model = {
+  // Making URLs easy to access
   apiBaseURL: "http://pokeapi.co",
   apiPokemonSearchURL: "http://pokeapi.co/api/v1/pokemon/",
   markerImage: "img/PokeMarker.png",
   streetViewURL: "http://maps.googleapis.com/maps/api/streetview?size=200x201&location=",
+
+  // Knockout can know when allPokemon is updated
   allPokemon: ko.observableArray(),
 
   /**
-   * Turn Pokemon name and coordinates into Pokemon object with map marker and
-   * add to array
+   * Filling allPokemon with an array of objects carrying map markers.
    */
   init: function () {
     var self = this;
 
     var pokemon;
-    var number = 1;
+
+    /**
+     * Create Pokemon object from each data item and add it to allPokemon array.
+     * @param {Object} data - Object containing Pokemon name, latitude, and
+     *                        longitude
+     * @param {Number} index - Index of data in array, used to calculate each
+     *                         Pokemon's Google PokeDex number
+     */
     self.pokemonData.forEach( function(data, index) {
-      pokemon = new self.Pokemon(data, index+1, NeighborhoodViewModel.map, self.streetViewURL, self.markerImage, function(thisPokemon) {
-          self.onMarkerClick(thisPokemon);
-        });
+      pokemon = new self.Pokemon(data,
+                                 index+1,
+                                 NeighborhoodViewModel.map,
+                                 self.streetViewURL,
+                                 self.markerImage,
+                                 function(thisPokemon) {
+        self.onMarkerClick(thisPokemon);
+      });
 
       self.allPokemon.push(pokemon);
     });
@@ -37,9 +52,14 @@ var model = {
   },
 
   /**
-   * Pokemon prototype for markers, their data, and manipulating them
-   * @param object pokemon - Pokemon data, holding a name and map coordinates
-   * @param google.maps.Map map - Our Google Map
+   * Pokemon prototype that carries markers and other data for each Pokemon. It
+   * makes it easier to interact and manipulate markers.
+   * @param {Object} pokemon - Pokemon data, holding a name and map coordinates
+   * @param {Number} number - Number ascribed to the particular Pokemon
+   * @param {google.maps.Map} map - The Google Map in use
+   * @param {String} streetViewURL - URL used for getting street view image
+   * @param {String} markerImage - URL for setting marker image
+   * @param {Function} onClick - Handling what happens on click of marker
    */
   Pokemon: function(pokemon, number, map, streetViewURL, markerImage, onClick) {
     var self = this;
@@ -55,10 +75,11 @@ var model = {
     self.image = ko.observable("");
     self.description = ko.observable("");
     self.hasData = ko.computed(function() {
-      return self.stats().length != 0 &&
-             self.image() != "";
+      return self.stats().length !== 0 &&
+             self.image() !== "";
     });
 
+    // Create marker
     self.marker = new google.maps.Marker({
       icon: markerImage,
       map: self.map,
@@ -66,26 +87,29 @@ var model = {
       title: self.name
     });
 
-    // Makes hidden marker reappear on map
+    // Show marker on map and let Knockout know to show it, too.
     self.show = function() {
       self.marker.setVisible(true);
       self.isVisible(true);
     };
 
-    // Makes marker disappear from map
+    // Hide marker on map and let Knockout know to hide it, too.
     self.hide = function() {
       self.marker.setVisible(false);
       self.isVisible(false);
     };
 
-    // Makes marker bounce once
+    // Make marker bounce once
     self.bounce = function() {
       self.marker.setAnimation(google.maps.Animation.BOUNCE);
+
+      // Limit bounce to one time (750ms)
       setTimeout(function() {
         self.marker.setAnimation(null);
       }, 750);
     };
 
+    // Listen for marker clicks, calling onClick when it happens
     google.maps.event.addListener(self.marker, 'click', function() {
       onClick(self);
     });
@@ -94,7 +118,7 @@ var model = {
 
   /**
    * What happens when the marker is clicked.
-   * @param Pokemon pokemon - Pokemon object that was clicked on.
+   * @param {Pokemon} pokemon - Pokemon object that was clicked on.
    */
   onMarkerClick: function(pokemon) {
     NeighborhoodViewModel.onMarkerClick(pokemon);
@@ -108,7 +132,7 @@ var model = {
 
   /**
    * Searches all Pokemon names for matching text, hiding and showing as needed
-   * @param string text - Search query
+   * @param {String} text - Search query
    */
   search: function (text) {
     var self = this;
@@ -116,15 +140,17 @@ var model = {
     var textLowerCase = text.toLowerCase();
     var nameLowerCase;
 
-    self.allPokemon().forEach( function(pokemon) {
 
+    /**
+     * Show and hide Pokemon depending on search term.
+     * @param {Pokemon} pokemon - Single instance from allPokemon
+     */
+    self.allPokemon().forEach( function(pokemon) {
       nameLowerCase = pokemon.name.toLowerCase();
 
-      /**
-       * Show if string is empty or if contains search term, indexOf being more
-       * browser universal
-       */
-      if ( textLowerCase == "" || nameLowerCase.indexOf(textLowerCase) != -1 ) {
+      // Empty search lists all Pokemon, and indexOf is browser universal
+      if ( textLowerCase === "" ||
+           nameLowerCase.indexOf(textLowerCase) !== -1 ) {
         pokemon.show();
       } else {
         pokemon.hide();
@@ -133,8 +159,18 @@ var model = {
     });
   },
 
+  /**
+   * Retrieves data from PokeAPI for given Pokemon object, making use of
+   * functions housed within it that have no use outside of it.
+   * @param {Pokemon} pokemon - Pokemon to get data for
+   */
   getData: function(pokemon) {
 
+    /**
+     * Callback that sets up Pokemon's stats and continues data-fetching chain
+     * to setupimages and description.
+     * @param {Object} data - JSON retrieved from PokeAPI
+     */
     function setupStats(data) {
 
       var statsData = [
@@ -194,12 +230,20 @@ var model = {
 
     } // end of setupStats
 
+    /**
+     * Callback function that sets Pokemon's image
+     * @param {Object} data - JSON retrieved from PokeAPI
+     */
     function setupSprite(data) {
       var url = model.apiBaseURL + data.image;
 
       pokemon.image(url);
     }
 
+    /**
+     * Callback function that sets Pokemon's description
+     * @param {Object} data - JSON retrieved from PokeAPI
+     */
     function setupDescription(data) {
       var description = data.description;
 
@@ -216,13 +260,27 @@ var model = {
       pokemon.description(description);
     }
 
+    // Error handling function that informs View Model of issues
     function errorLoad() {
       NeighborhoodViewModel.errorLoad(true);
     }
 
+    /**
+     * Makes requests for JSON with AJAX, without using jQuery.
+     * @param {String} url - The URL address to send the request to.
+     * @param {Function} callback - The function to call if data is successfully
+     *                              retrieved.
+     * @param {Function} errorHandler - The function to call if retrieval is
+     *                                  unsuccessful.
+     */
     function getJSON(url, callback, errorHandler) {
       var request = new XMLHttpRequest();
       request.open("GET", url, true);
+
+      /**
+       * This is called throughout the data retrieval process. Once the request
+       * is complete (4), check if the status is OK (200) and act accordingly.
+       */
       request.onreadystatechange = function() {
         if (request.readyState == 4) {
           if (request.status == 200) {
@@ -236,17 +294,32 @@ var model = {
 
       request.send();
 
-    }
+    } // end of getJSON
 
+
+    /**
+     * Makes a version of the Pokemon's name that works for searching PokeAPI.
+     * @return {String} finalName - Correctly stylized version of Pokemon's name
+     */
     function getStyleName() {
       var nameLowerCase = pokemon.name.toLowerCase();
       var spaceLocation = nameLowerCase.indexOf(" ");
 
       var finalName;
-      if (spaceLocation > -1) {
-        finalName = nameLowerCase.slice(0, spaceLocation)
-                    + "-male";
+      if (spaceLocation !== -1) {
+        /**
+         * Some Pokemon come in a male and female variety. The PokeAPI seems to
+         * not list all the data for female Pokemon for some reason, so just go
+         * for male data.
+         */
+        finalName = nameLowerCase.slice(0, spaceLocation) +
+                    "-male";
       } else if (nameLowerCase == "pumpkaboo") {
+        /**
+         * The Pokemon Pumpkaboo has varying data depending on the size, and the
+         * PokeAPI requires the size to be attached. Just going to go with the
+         * regular size.
+         */
         finalName = nameLowerCase + "-average";
       } else {
         finalName = nameLowerCase;
@@ -261,7 +334,7 @@ var model = {
 
   }, // end of getData
 
-  // 150 Pokemon and a Google Map location
+  // 150 Pokemon, each with a name and lattitude and longitude coordinates
   pokemonData: [
     // Kanto Pokemon
     {
@@ -1113,7 +1186,7 @@ var NeighborhoodViewModel = {
       google.maps.event.addListener(self.infoWindow, 'domready', function () {
         if (!isInfoWindowLoaded)
         {
-          ko.applyBindings( self, document.getElementsByClassName("info-window")[0] );
+          ko.applyBindings( self, document.getElementsByClassName('info-window')[0] );
           isInfoWindowLoaded = true;
         }
       });
