@@ -1175,10 +1175,10 @@ var NeighborhoodViewModel = {
 
     /**
      * Creates Google Map.
-     * @return {google.maps.Map} - Instance of Google Map object.
+     * @return {google.maps.Map} - Instance of Google Map object
      */
     function mapInitialize() {
-        var mapElement = document.getElementsByClassName('map-canvas')[0];
+        var mapElement = document.querySelector('.map-canvas');
         var googleplex = new google.maps.LatLng(37.422,-122.084058);
         var mapOptions = {
           center: googleplex,
@@ -1191,7 +1191,7 @@ var NeighborhoodViewModel = {
 
     /**
      * Setup single info window to be used throughout map.
-     * @return {google.maps.InfoWindow} - Instance of info window object.
+     * @return {google.maps.InfoWindow} - Instance of info window object
      */
     function infoWindowInitialize() {
       var infoWindowHTML = self.getInfoWindowView();
@@ -1200,7 +1200,7 @@ var NeighborhoodViewModel = {
       google.maps.event.addListener(infoWindow, 'domready', function () {
         if (!self.isInfoWindowLoaded)
         {
-          var infoWindowElement = document.getElementsByClassName('info-window')[0];
+          var infoWindowElement = document.querySelector('.info-window');
           ko.applyBindings( self, infoWindowElement );
           self.isInfoWindowLoaded = true;
         }
@@ -1209,18 +1209,24 @@ var NeighborhoodViewModel = {
       return infoWindow;
     }
 
+    function viewItemsInitialize() {
+      self.drawer = document.querySelector('.drawer');
+      self.modal = document.querySelector('.modal');
+      self.scrollBox= document.querySelector('.location-holder');
+    }
 
-    // Initializing
+
+    // Initializing based on if Google Maps API has loaded
     if ( self.isGoogleWorking ) {
       self.map = mapInitialize();
       self.infoWindow = infoWindowInitialize();
+      viewItemsInitialize();
       model.init();
     }
 
     ko.applyBindings(self);
 
   }, // end of init
-
 
   /**
    * Searches all Pokemon names for matching text, hiding and showing as needed
@@ -1235,7 +1241,7 @@ var NeighborhoodViewModel = {
 
   /**
    * What happens when the marker is clicked.
-   * @param {Pokemon} pokemon - Pokemon object that was clicked on.
+   * @param {Pokemon} pokemon - Pokemon object that was clicked on
    */
   onMarkerClick: function(pokemon) {
     var self = this;
@@ -1245,7 +1251,7 @@ var NeighborhoodViewModel = {
 
     /**
      * Show info window before changing currentPokemon, else lose Knockout
-     * bindings and leave contents stuck.
+     * bindings and leave contents stuck
      */
     self.displayInfoWindow(pokemon.marker);
     self.currentPokemon(pokemon);
@@ -1254,7 +1260,7 @@ var NeighborhoodViewModel = {
 
   /**
    * Makes lone info window pop show up at the given marker.
-   * @param {google.maps.Marker} marker - The marker to show the info window at.
+   * @param {google.maps.Marker} marker - The marker to show the info window at
    */
   displayInfoWindow: function (marker) {
     var self = this;
@@ -1270,15 +1276,83 @@ var NeighborhoodViewModel = {
     google.maps.event.trigger(pokemon.marker, 'click');
   },
 
+  // Sets list of scroll back to the very top
+  resetListScroll: function() {
+    var self = this;
+    self.scrollBox.scrollTop = 0;
+  },
+
+  // What happens when the hamburger/menu icon is clicked
+  onHamburgerClick: function() {
+    var self = this;
+
+    if ( self.drawer.classList.contains('open') ) {
+      self.resetListScroll();
+    }
+
+    self.toggleDrawer();
+  },
+
+  // Toggles opening and closing of drawer on button click
+  toggleDrawer: function() {
+    var self = this;
+    self.drawer.classList.toggle('open');
+  },
 
   /**
-   * View-likes
-   * Things more tied to the View
+   * Hide drawer, called by certain clicks.
+   * @param {Object} data - The NeighborhoodViewModel object, not needed
+   * @param {MouseEvent} event - Click information
    */
+  hideDrawer: function (data, event) {
+    var self = this;
+    self.drawer.classList.remove('open');
+  },
 
-  drawer: document.querySelector('.drawer'),
-  modal: document.querySelector('.modal'),
-  scrollBox: document.querySelector('.location-holder'),
+  // Show the modal
+  showModal: function() {
+    var self = this;
+    self.modal.classList.remove('hide');
+  },
+
+  // Hide the modal
+  hideModal: function() {
+    var self = this;
+    self.modal.classList.add('hide');
+  },
+
+  /**
+   * Generates three-digit version of given number, adjusting it into a string
+   * if it doesn't already have three digits.
+   * @param  {Number} number - Given number
+   * @return {String or Number} - Three-digit version of number
+   */
+  formatNumber: function(number) {
+    var formattedNumber;
+
+    if (number < 10) {
+      formattedNumber = "00" + number;
+    } else if (number < 100) {
+      formattedNumber = "0" + number;
+    } else {
+      formattedNumber = number;
+    }
+
+    return formattedNumber;
+  },
+
+  /**
+   * Creates a string of the Pokemon's number plus it's name.
+   * @param  {String} name - Pokemon's name
+   * @param  {Number} number - Pokemon's Google PokeDex number
+   * @return {String} - Combination of Pokemon's number and name
+   */
+  getLabel: function (name, number) {
+    var self = this;
+    var formattedNumber = self.formatNumber(number);
+
+    return formattedNumber + " " + name;
+  },
 
   /**
    * Retrieves HTML code meant to go inside the info window.
@@ -1325,90 +1399,12 @@ var NeighborhoodViewModel = {
     return innerHTML;
   },
 
-  // Sets list of scroll back to the very top
-  resetListScroll: function() {
-    var self = this;
-    self.scrollBox.scrollTop = 0;
-  },
-
-  // What happens when the hamburger/menu icon is clicked
-  onHamburgerClick: function() {
-    var self = this;
-
-    if ( self.drawer.classList.contains('open') ) {
-      self.resetListScroll();
-    }
-
-    self.toggleDrawer();
-  },
-
-  // Toggles opening and closing of drawer on button click
-  toggleDrawer: function() {
-    var self = this;
-    self.drawer.classList.toggle('open');
-  },
-
-  /**
-   * Hide drawer, called by certain clicks.
-   * @param {Object} data - The NeighborhoodViewModel object, not needed.
-   * @param {MouseEvent} event - Click information.
-   */
-  hideDrawer: function (data, event) {
-    var self = this;
-    self.drawer.classList.remove('open');
-  },
-
-  // Show the modal
-  showModal: function() {
-    var self = this;
-    self.modal.classList.remove('hide');
-  },
-
-  // Hide the modal
-  hideModal: function() {
-    var self = this;
-    self.modal.classList.add('hide');
-  },
-
-  /**
-   * Generates three-digit version of given number, adjusting it into a string
-   * if it doesn't already have three digits.
-   * @param  {Number} number - Given number.
-   * @return {String or Number} - Three-digit version of number.
-   */
-  formatNumber: function(number) {
-    var formattedNumber;
-
-    if (number < 10) {
-      formattedNumber = "00" + number;
-    } else if (number < 100) {
-      formattedNumber = "0" + number;
-    } else {
-      formattedNumber = number;
-    }
-
-    return formattedNumber;
-  },
-
-  /**
-   * Creates a string of the Pokemon's number plus it's name.
-   * @param  {String} name - Pokemon's name.
-   * @param  {Number} number - Pokemon's Google PokeDex number.
-   * @return {String}
-   */
-  getLabel: function (name, number) {
-    var self = this;
-    var formattedNumber = self.formatNumber(number);
-
-    return formattedNumber + " " + name;
-  },
-
   /**
    * Turns stat number into a percentage for calculating the size of the bar of
    * the div that represents the value.
    * @param  {String} stat - Number in string format, representing one of a
-   *                         Pokemon's stats.
-   * @return {String}
+   *                         Pokemon's stats
+   * @return {String} - Percentage for style
    */
   getStatPercentage: function(stat) {
     var maxStat = 255;
@@ -1419,8 +1415,8 @@ var NeighborhoodViewModel = {
 
   /**
    * Creates style code for displaying the street view image;
-   * @param  {String} streetView - URL for street view image.
-   * @return {String}
+   * @param  {String} streetView - URL for street view image
+   * @return {String} - Code for background-image
    */
   getStreetViewStyle: function(streetView) {
     return "url(" + streetView + ")";
