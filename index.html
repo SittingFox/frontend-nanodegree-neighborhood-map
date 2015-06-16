@@ -36,7 +36,7 @@
       <!-- Area for Google Map -->
       <div class="map-canvas" data-bind="click: hideDrawer">
         <!-- Display when error loading map -->
-        <section class="map-error" data-bind="visible: !isGoogleWorking" style="display:none">
+        <section class="map-error hide" data-bind="css: {hide: isGoogleWorking}">
           <h2>Sorry! Can't load map!</h2>
 
           <p class="text-error">Are you sure you're connected to the internet?</p>

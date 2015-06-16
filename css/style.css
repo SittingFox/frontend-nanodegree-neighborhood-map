@@ -18,6 +18,11 @@ input {
 }
 
 
+.hide {
+  display: none;
+}
+
+
 
 /* Top bar area */
 .header {
@@ -87,7 +92,7 @@ h1 {
   }
 
 
-  .drawer.open {
+  .open {
     -webkit-transform: translate(0, 0);
     transform: translate(0, 0);
   }
@@ -400,11 +405,6 @@ img.iw-image {
   top: calc(50% - 125px);
   width: 300px;
   z-index: 21;
-}
-
-
-.modal.hide {
-  display: none;
 }
 
 

@@ -1363,37 +1363,37 @@ var NeighborhoodViewModel = {
       '<div class="info-window">' +
         '<!-- ko ifnot: errorLoad -->' +
           '<!-- ko with: currentPokemon -->' +
-          '<!-- ko if: hasData -->' +
-            '<header>' +
-            '<h2 class="iw-title" data-bind="text: name"></h2>' +
-              '<span class="iw-number" data-bind="text: $parent.formatNumber(number)"></span>' +
-            '</header>' +
-            '<div class="iw-top">' +
-              '<div class="iw-image-holder" data-bind="style: { backgroundImage: $parent.getStreetViewStyle(streetView) }">' +
-                '<img class="iw-image" data-bind="attr: {src: image, alt: name}">' +
+            '<!-- ko if: hasData -->' +
+              '<header>' +
+                '<h2 class="iw-title" data-bind="text: name"></h2>' +
+                '<span class="iw-number" data-bind="text: $parent.formatNumber(number)"></span>' +
+              '</header>' +
+              '<div class="iw-top">' +
+                '<div class="iw-image-holder" data-bind="style: { backgroundImage: $parent.getStreetViewStyle(streetView) }">' +
+                  '<img class="iw-image" data-bind="attr: {src: image, alt: name}">' +
+                '</div>' +
+                '<ul class="iw-stat-list" data-bind="foreach: stats">' +
+                    '<li class="iw-stat-item">' +
+                      '<div class="iw-stat-name" data-bind="text: name"></div>' +
+                      '<div class="iw-stat-number" data-bind="text: value"></div>' +
+                      '<div class="iw-stat-bar">' +
+                        '<div class="iw-stat-fill" data-bind="style: {width: $root.getStatPercentage(value)}">&nbsp;</div>' +
+                      '</div>' +
+                    '</li>' +
+                '</ul>' +
               '</div>' +
-              '<ul class="iw-stat-list" data-bind="foreach: stats">' +
-                  '<li class="iw-stat-item">' +
-                    '<div class="iw-stat-name" data-bind="text: name"></div>' +
-                    '<div class="iw-stat-number" data-bind="text: value"></div>' +
-                    '<div class="iw-stat-bar">' +
-                      '<div class="iw-stat-fill" data-bind="style: {width: $root.getStatPercentage(value)}">&nbsp;</div>' +
-                    '</div>' +
-                  '</li>' +
-              '</ul>' +
-            '</div>' +
-            '<p class="iw-description" data-bind="text: description"></p>' +
-            '<!-- /ko -->' +
+              '<p class="iw-description" data-bind="text: description"></p>' +
+            '<!-- /ko -->' +  // end if: hasData
             '<!-- ko ifnot: hasData -->' +
               '<h2 class="iw-loading-title">Loading</h2>' +
               '<img class="iw-loading-image" src="img/PinkPokeBall.svg">' +
-            '<!-- /ko -->' +
-          '<!-- /ko -->' +
-        '<!-- /ko -->' +
+            '<!-- /ko -->' +  // end ifnot: hasData
+          '<!-- /ko -->' +  // end with: currentPokemon
+        '<!-- /ko -->' + // end ifnot: errorLoad
         '<!-- ko if: errorLoad -->' +
           '<h2 class="iw-title">Unable to Load</h2>' +
           '<p class="text-error">Are you connected to the internet?</p>' +
-        '<!-- /ko -->' +
+        '<!-- /ko -->' + // end errorLoad
       '</div>';
 
     return innerHTML;
