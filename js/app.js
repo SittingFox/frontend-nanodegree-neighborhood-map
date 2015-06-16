@@ -165,106 +165,6 @@ var model = {
    * @param {Pokemon} pokemon - Pokemon to get data for
    */
   getData: function(pokemon) {
-
-    /**
-     * Callback that sets up Pokemon's stats and continues data-fetching chain
-     * to setupimages and description.
-     * @param {Object} data - JSON retrieved from PokeAPI
-     */
-    function setupStats(data) {
-
-      var statsData = [
-        {
-          name: "HP",
-          value: data.hp
-        },
-        {
-          name: "Atk",
-          value: data.attack
-        },
-        {
-          name: "Def",
-          value: data.defense
-        },
-        {
-          name: "SpA",
-          value: data.sp_atk
-        },
-        {
-          name: "SpD",
-          value: data.sp_def
-        },
-        {
-          name: "Spe",
-          value: data.speed
-        }
-      ];
-
-      pokemon.stats(statsData);
-
-      /*
-       * Making sure this is not the single case where I manually provide the
-       * image.
-       */
-      if ( pokemon.name == "Meowstic (Female)") {
-        pokemon.image("img/meowstic-female.png");
-      } else {
-        var spritesData = data.sprites.shift();
-        var url = model.apiBaseURL + spritesData.resource_uri;
-
-        getJSON(url, setupSprite, errorLoad);
-      }
-
-      var allDescriptions = data.descriptions;
-      var descriptionURI;
-      allDescriptions.forEach( function(entry) {
-        if (entry.name[entry.name.length - 1] == "5" ||
-          entry.name[entry.name.length - 1] == "6") {
-
-          descriptionURI = entry.resource_uri;
-        }
-      });
-      var descriptionURL = model.apiBaseURL + descriptionURI;
-
-      getJSON(descriptionURL, setupDescription, errorLoad);
-
-    } // end of setupStats
-
-    /**
-     * Callback function that sets Pokemon's image
-     * @param {Object} data - JSON retrieved from PokeAPI
-     */
-    function setupSprite(data) {
-      var url = model.apiBaseURL + data.image;
-
-      pokemon.image(url);
-    }
-
-    /**
-     * Callback function that sets Pokemon's description
-     * @param {Object} data - JSON retrieved from PokeAPI
-     */
-    function setupDescription(data) {
-      var description = data.description;
-
-      /**
-       * The descriptions seem to have some missing characters, making for
-       * typos. It's kind of annoying, so let's see if I can fix some at least.
-       */
-      description = description.replace("cant", "can't");
-      description = description.replace("isnt", "isn't");
-      description = description.replace("Pokmons", "Pokémon's");
-      description = description.replace(/Pokmon/g, "Pokémon");
-      description = description.replace("wont", "won't");
-
-      pokemon.description(description);
-    }
-
-    // Error handling function that informs View Model of issues
-    function errorLoad() {
-      NeighborhoodViewModel.errorLoad(true);
-    }
-
     /**
      * Makes requests for JSON with AJAX, without using jQuery.
      * @param {String} url - The URL address to send the request to.
@@ -296,6 +196,155 @@ var model = {
 
     } // end of getJSON
 
+    /**
+     * Initial callback that begins the chain for getting and setting data from
+     * the PokeAPI.
+     * @param {Object} data - JSON retrieved from PokeAPI
+     */
+    function setupChain(data) {
+      setStats(data);
+      chainToSprite(data);
+      chainToDescription(data);
+    }
+
+    /**
+     * Sets up Pokemon's stats and continues data-fetching chain
+     * to setupimages and description.
+     * @param {Object} data - JSON retrieved from PokeAPI
+     */
+    function setStats(data) {
+
+      var statsData = [
+        {
+          name: "HP",
+          value: data.hp
+        },
+        {
+          name: "Atk",
+          value: data.attack
+        },
+        {
+          name: "Def",
+          value: data.defense
+        },
+        {
+          name: "SpA",
+          value: data.sp_atk
+        },
+        {
+          name: "SpD",
+          value: data.sp_def
+        },
+        {
+          name: "Spe",
+          value: data.speed
+        }
+      ];
+
+      pokemon.stats(statsData);
+
+    } // end of setupStats
+
+    /**
+     * Next in chain, aiming to help set the sprite image for the Pokemon.
+     * @param {Object} data - JSON retrieved from PokeAPI
+     */
+    function chainToSprite(data) {
+      /*
+       * Making sure this is not the single case where I manually provide the
+       * image.
+       */
+      if ( pokemon.name == "Meowstic (Female)") {
+        pokemon.image("img/meowstic-female.png");
+      } else {
+        // Use last image in list
+        var spritesData = data.sprites.shift();
+        var url = model.apiBaseURL + spritesData.resource_uri;
+
+        getJSON(url, setSprite, errorLoad);
+      }
+    }
+
+    /**
+     * Callback function that sets Pokemon's sprite image.
+     * @param {Object} data - Image JSON retrieved from PokeAPI
+     */
+    function setSprite(data) {
+      var url = model.apiBaseURL + data.image;
+
+      pokemon.image(url);
+    }
+
+    /**
+     * Last in chain, aiming to help set the description text for the Pokemon.
+     * @param {Object} data - JSON retrieved from PokeAPI
+     */
+    function chainToDescription(data) {
+      var allDescriptions = data.descriptions;
+      var descriptionURI = chooseDescription(allDescriptions);
+      var descriptionURL = model.apiBaseURL + descriptionURI;
+
+      getJSON(descriptionURL, setDescription, errorLoad);
+    }
+
+    /**
+     * Chooses one description URI from the list to be used.
+     * @param  {Array} allDescriptions - Array of description JSONs
+     * @return {String} - URI for getting description
+     */
+    function chooseDescription(allDescriptions) {
+      var descriptionURI;
+
+      /**
+       * Gets a description from either Pokemon Generation 5 or 6, which are the
+       * newer sets of games. Not all Pokemon have Generation 6 descriptions.
+       * @param {Object} entry - Description URI JSON object retrieved from
+       *                         PokeAPI
+       */
+      allDescriptions.forEach( function(entry) {
+        if (entry.name[entry.name.length - 1] == "5" ||
+          entry.name[entry.name.length - 1] == "6") {
+
+          descriptionURI = entry.resource_uri;
+        }
+      });
+
+      return descriptionURI;
+    }
+
+    /**
+     * Callback function that sets Pokemon's description
+     * @param {Object} data - JSON retrieved from PokeAPI
+     */
+    function setDescription(data) {
+      var description = data.description;
+      var newDescription = cleanDescription(description);
+
+      pokemon.description(newDescription);
+    }
+
+    /**
+     * This is an attempt to fix a handful of errors found in multiple
+     * descriptions.
+     * @param  {String} oldDescription - Original description from PokeAPI
+     * @return {String} - Improved description
+     */
+    function cleanDescription(oldDescription) {
+      var newDescription = oldDescription;
+
+      newDescription = newDescription.replace("cant", "can't");
+      newDescription = newDescription.replace("isnt", "isn't");
+      newDescription = newDescription.replace("Pokmons", "Pokémon's");
+      newDescription = newDescription.replace(/Pokmon/g, "Pokémon");
+      newDescription = newDescription.replace("wont", "won't");
+
+      return newDescription;
+    }
+
+    // Error handling function that informs View Model of issues
+    function errorLoad() {
+      NeighborhoodViewModel.errorLoad(true);
+    }
 
     /**
      * Makes a version of the Pokemon's name that works for searching PokeAPI.
@@ -330,7 +379,7 @@ var model = {
 
     var apiStyleName = getStyleName();
     var url = model.apiPokemonSearchURL + apiStyleName;
-    getJSON(url, setupStats, errorLoad);
+    getJSON(url, setupChain, errorLoad);
 
   }, // end of getData
 
