@@ -21,7 +21,7 @@ A [Stack Overflow thread](https://stackoverflow.com/questions/9543304/knockout-j
 Knockout + Info Window
 ----------------------
 
-I wasn't sure if working in Knockout with Google's info windows was possible. Then I found [Google Maps InfoWindow With Knockout"](http://techcrawler.riedme.de/2012/09/14/google-maps-infowindow-with-knockout/). It's a few years old, but after replacing the Knockout file in the given JSfiddle, I really started making progress.
+I wasn't sure if working in Knockout with Google's info windows was possible. Then I found [Google Maps InfoWindow With Knockout](http://techcrawler.riedme.de/2012/09/14/google-maps-infowindow-with-knockout/). It's a few years old, but after replacing the Knockout file in the given JSfiddle, I really started making progress.
 
 
 Pure JavaScript Ajax
@@ -44,3 +44,9 @@ Bounce Marker Once
 ------------------
 
 Getting a map marker to bounce only one time is a little trickier than it sounds. Once again, [StackOverflow](https://stackoverflow.com/questions/7339200/bounce-a-pin-in-google-maps-once) to the rescue!
+
+
+Meowstic Image
+--------------
+
+I'll give thanks to [Pokémon Database](http://pokemondb.net/) for the image I needed. It was just the right size, fitting what PokéAPI seemed to use. It's definitely a site I want to remember for the future.
