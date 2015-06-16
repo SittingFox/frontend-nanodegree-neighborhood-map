@@ -14,7 +14,7 @@
    * The Model is the holder of data
    * @type {Object}
    */
-  var model = {
+  var Model = {
     // Making URLs easy to access
     apiBaseURL: "http://pokeapi.co",
     apiPokemonSearchURL: "http://pokeapi.co/api/v1/pokemon/",
@@ -137,7 +137,7 @@
       PokeMapViewModel.errorLoad(false);
 
       if (!pokemon.hasData()) {
-        model.getData(pokemon);
+        Model.getData(pokemon);
       }
     },
 
@@ -272,7 +272,7 @@
         } else {
           // Use last image in list
           var spritesData = data.sprites.shift();
-          var url = model.apiBaseURL + spritesData.resource_uri;
+          var url = Model.apiBaseURL + spritesData.resource_uri;
 
           getJSON(url, setSprite, errorLoad);
         }
@@ -283,7 +283,7 @@
        * @param {Object} data - Image JSON retrieved from PokeAPI
        */
       function setSprite(data) {
-        var url = model.apiBaseURL + data.image;
+        var url = Model.apiBaseURL + data.image;
 
         pokemon.image(url);
       }
@@ -295,7 +295,7 @@
       function chainToDescription(data) {
         var allDescriptions = data.descriptions;
         var descriptionURI = chooseDescription(allDescriptions);
-        var descriptionURL = model.apiBaseURL + descriptionURI;
+        var descriptionURL = Model.apiBaseURL + descriptionURI;
 
         getJSON(descriptionURL, setDescription, errorLoad);
       }
@@ -393,7 +393,7 @@
       }
 
       var apiStyleName = getStyleName();
-      var url = model.apiPokemonSearchURL + apiStyleName;
+      var url = Model.apiPokemonSearchURL + apiStyleName;
       getJSON(url, setupChain, errorLoad);
 
     }, // end of getData
@@ -1176,9 +1176,13 @@
 
       // Retrieves allPokemon from Model to use in View
       self.getPokemon = ko.pureComputed(function() {
-        return model.allPokemon();
+        return Model.allPokemon();
       });
 
+      /**
+       * On change of search text, perform a search.
+       * @param {String} newValue) - The new, current string in the search box
+       */
       self.searchText.subscribe( function (newValue) {
         self.search(newValue);
       });
@@ -1212,6 +1216,8 @@
         var infoWindowHTML = self.getInfoWindowView();
 
         var infoWindow = new google.maps.InfoWindow({content: infoWindowHTML});
+
+        // Apply Knockout bindings to info window content when it's available.
         google.maps.event.addListener(infoWindow, 'domready', function () {
           if (!self.isInfoWindowLoaded)
           {
@@ -1236,7 +1242,7 @@
         self.map = mapInitialize();
         self.infoWindow = infoWindowInitialize();
         viewItemsInitialize();
-        model.init();
+        Model.init();
       }
 
       ko.applyBindings(self);
@@ -1252,7 +1258,7 @@
       var self = this;
 
       self.resetListScroll();
-      model.search(text);
+      Model.search(text);
     },
 
     /**
