@@ -1110,6 +1110,7 @@ var NeighborhoodViewModel = {
     self.searchText = ko.observable();
     self.errorLoad = ko.observable(false);
 
+    // Retrieves allPokemon from Model to use in View
     self.getPokemon = ko.computed(function() {
       return model.allPokemon();
     });
@@ -1118,16 +1119,14 @@ var NeighborhoodViewModel = {
       self.search(newValue);
     });
 
+    // Important booleans
     self.isGoogleWorking = (typeof google !== 'undefined');
+    self.isInfoWindowLoaded = false;
+
 
     /**
-     * Initialize
-     * Set up any functions needed, and then get initializing
-     */
-
-    /**
-     * Creates Google Map
-     * @return google.maps.Map - Google Map object
+     * Creates Google Map.
+     * @return {google.maps.Map} - Instance of Google Map object.
      */
     function mapInitialize() {
         var mapElement = document.getElementsByClassName('map-canvas')[0];
@@ -1141,56 +1140,31 @@ var NeighborhoodViewModel = {
         return ( new google.maps.Map(mapElement, mapOptions) );
     }
 
+    /**
+     * Setup single info window to be used throughout map.
+     * @return {google.maps.InfoWindow} - Instance of info window object.
+     */
+    function infoWindowInitialize() {
+      var infoWindowHTML = self.getInfoWindowView();
+
+      var infoWindow = new google.maps.InfoWindow({content: infoWindowHTML});
+      google.maps.event.addListener(infoWindow, 'domready', function () {
+        if (!self.isInfoWindowLoaded)
+        {
+          var infoWindowElement = document.getElementsByClassName('info-window')[0];
+          ko.applyBindings( self, infoWindowElement );
+          self.isInfoWindowLoaded = true;
+        }
+      });
+
+      return infoWindow;
+    }
+
 
     // Initializing
     if ( self.isGoogleWorking ) {
       self.map = mapInitialize();
-      var infoWindowHTML =
-        '<div class="info-window">' +
-          '<!-- ko ifnot: errorLoad -->' +
-            '<!-- ko with: currentPokemon -->' +
-            '<!-- ko if: hasData -->' +
-              '<header>' +
-              '<h2 class="iw-title" data-bind="text: name"></h2>' +
-                '<span class="iw-number" data-bind="text: $parent.formatNumber(number)"></span>' +
-              '</header>' +
-              '<div class="iw-top">' +
-                '<div class="iw-image-holder" data-bind="style: { backgroundImage: $parent.getStreetView(streetView) }">' +
-                  '<img class="iw-image" data-bind="attr: {src: image, alt: name}">' +
-                '</div>' +
-                '<ul class="iw-stat-list" data-bind="foreach: stats">' +
-                    '<li class="iw-stat-item">' +
-                      '<div class="iw-stat-name" data-bind="text: name"></div>' +
-                      '<div class="iw-stat-number" data-bind="text: value"></div>' +
-                      '<div class="iw-stat-bar">' +
-                        '<div class="iw-stat-fill" data-bind="style: {width: $root.getStatPercentage(value)}">&nbsp;</div>' +
-                      '</div>' +
-                    '</li>' +
-                '</ul>' +
-              '</div>' +
-              '<p class="iw-description" data-bind="text: description"></p>' +
-              '<!-- /ko -->' +
-              '<!-- ko ifnot: hasData -->' +
-                '<h2 class="iw-loading-title">Loading</h2>' +
-                '<img class="iw-loading-image" src="img/PinkPokeBall.svg">' +
-              '<!-- /ko -->' +
-            '<!-- /ko -->' +
-          '<!-- /ko -->' +
-          '<!-- ko if: errorLoad -->' +
-            '<h2 class="iw-title">Unable to Load</h2>' +
-            '<p class="text-error">Are you connected to the internet?</p>' +
-          '<!-- /ko -->' +
-        '</div>';
-      self.infoWindow = new google.maps.InfoWindow({content: infoWindowHTML});
-      var isInfoWindowLoaded = false;
-      google.maps.event.addListener(self.infoWindow, 'domready', function () {
-        if (!isInfoWindowLoaded)
-        {
-          ko.applyBindings( self, document.getElementsByClassName('info-window')[0] );
-          isInfoWindowLoaded = true;
-        }
-      });
-
+      self.infoWindow = infoWindowInitialize();
       model.init();
     }
 
@@ -1201,18 +1175,18 @@ var NeighborhoodViewModel = {
 
   /**
    * Searches all Pokemon names for matching text, hiding and showing as needed
-   * @param string text - Search query
+   * @param {String} text - Search query
    */
   search: function (text) {
     var self = this;
-    self.scrollBox.scrollTop = 0;  // scroll back to top
 
+    self.resetListScroll();
     model.search(text);
   },
 
   /**
    * What happens when the marker is clicked.
-   * @param Pokemon pokemon - Pokemon object that was clicked on.
+   * @param {Pokemon} pokemon - Pokemon object that was clicked on.
    */
   onMarkerClick: function(pokemon) {
     var self = this;
@@ -1229,14 +1203,22 @@ var NeighborhoodViewModel = {
 
   },
 
+  /**
+   * Makes lone info window pop show up at the given marker.
+   * @param {google.maps.Marker} marker - The marker to show the info window at.
+   */
   displayInfoWindow: function (marker) {
     var self = this;
     self.infoWindow.open(self.map, marker);
   },
 
-
-  onListClick: function(element) {
-    google.maps.event.trigger(element.marker, 'click');
+  /**
+   * Triggers click on marker of clicked Pokemon list item.
+   * @param {Pokemon} pokemon - The Pokemon associated with the clicked list
+   *                            item.
+   */
+  onListClick: function(pokemon) {
+    google.maps.event.trigger(pokemon.marker, 'click');
   },
 
 
@@ -1249,37 +1231,102 @@ var NeighborhoodViewModel = {
   modal: document.querySelector('.modal'),
   scrollBox: document.querySelector('.location-holder'),
 
-  // Toggles opening and closing of drawer on button click
-  toggleDrawer: function() {
+  /**
+   * Retrieves HTML code meant to go inside the info window.
+   * @return {String} - HTML code
+   */
+  getInfoWindowView: function () {
+    var innerHTML =
+      '<div class="info-window">' +
+        '<!-- ko ifnot: errorLoad -->' +
+          '<!-- ko with: currentPokemon -->' +
+          '<!-- ko if: hasData -->' +
+            '<header>' +
+            '<h2 class="iw-title" data-bind="text: name"></h2>' +
+              '<span class="iw-number" data-bind="text: $parent.formatNumber(number)"></span>' +
+            '</header>' +
+            '<div class="iw-top">' +
+              '<div class="iw-image-holder" data-bind="style: { backgroundImage: $parent.getStreetViewStyle(streetView) }">' +
+                '<img class="iw-image" data-bind="attr: {src: image, alt: name}">' +
+              '</div>' +
+              '<ul class="iw-stat-list" data-bind="foreach: stats">' +
+                  '<li class="iw-stat-item">' +
+                    '<div class="iw-stat-name" data-bind="text: name"></div>' +
+                    '<div class="iw-stat-number" data-bind="text: value"></div>' +
+                    '<div class="iw-stat-bar">' +
+                      '<div class="iw-stat-fill" data-bind="style: {width: $root.getStatPercentage(value)}">&nbsp;</div>' +
+                    '</div>' +
+                  '</li>' +
+              '</ul>' +
+            '</div>' +
+            '<p class="iw-description" data-bind="text: description"></p>' +
+            '<!-- /ko -->' +
+            '<!-- ko ifnot: hasData -->' +
+              '<h2 class="iw-loading-title">Loading</h2>' +
+              '<img class="iw-loading-image" src="img/PinkPokeBall.svg">' +
+            '<!-- /ko -->' +
+          '<!-- /ko -->' +
+        '<!-- /ko -->' +
+        '<!-- ko if: errorLoad -->' +
+          '<h2 class="iw-title">Unable to Load</h2>' +
+          '<p class="text-error">Are you connected to the internet?</p>' +
+        '<!-- /ko -->' +
+      '</div>';
+
+    return innerHTML;
+  },
+
+  // Sets list of scroll back to the very top
+  resetListScroll: function() {
+    var self = this;
+    self.scrollBox.scrollTop = 0;
+  },
+
+  // What happens when the hamburger/menu icon is clicked
+  onHamburgerClick: function() {
     var self = this;
 
     if ( self.drawer.classList.contains('open') ) {
-      self.scrollBox.scrollTop = 0;  // scroll back to top
+      self.resetListScroll();
     }
 
+    self.toggleDrawer();
+  },
+
+  // Toggles opening and closing of drawer on button click
+  toggleDrawer: function() {
+    var self = this;
     self.drawer.classList.toggle('open');
   },
 
   /**
-   * Hide drawer, called by certain clicks
-   * @param object data - The NeighborhoodViewModel object
-   * @param MouseEvent event - Click information
+   * Hide drawer, called by certain clicks.
+   * @param {Object} data - The NeighborhoodViewModel object, not needed.
+   * @param {MouseEvent} event - Click information.
    */
   hideDrawer: function (data, event) {
     var self = this;
     self.drawer.classList.remove('open');
   },
 
+  // Show the modal
   showModal: function() {
     var self = this;
     self.modal.classList.remove('hide');
   },
 
+  // Hide the modal
   hideModal: function() {
     var self = this;
     self.modal.classList.add('hide');
   },
 
+  /**
+   * Generates three-digit version of given number, adjusting it into a string
+   * if it doesn't already have three digits.
+   * @param  {Number} number - Given number.
+   * @return {String or Number} - Three-digit version of number.
+   */
   formatNumber: function(number) {
     var formattedNumber;
 
@@ -1294,6 +1341,12 @@ var NeighborhoodViewModel = {
     return formattedNumber;
   },
 
+  /**
+   * Creates a string of the Pokemon's number plus it's name.
+   * @param  {String} name - Pokemon's name.
+   * @param  {Number} number - Pokemon's Google PokeDex number.
+   * @return {String}
+   */
   getLabel: function (name, number) {
     var self = this;
     var formattedNumber = self.formatNumber(number);
@@ -1301,16 +1354,31 @@ var NeighborhoodViewModel = {
     return formattedNumber + " " + name;
   },
 
+  /**
+   * Turns stat number into a percentage for calculating the size of the bar of
+   * the div that represents the value.
+   * @param  {String} stat - Number in string format, representing one of a
+   *                         Pokemon's stats.
+   * @return {String}
+   */
   getStatPercentage: function(stat) {
-    var calc = (stat / 255) * 100;
-    return calc + '%';
+    var maxStat = 255;
+    var calcPercent = (stat / maxStat) * 100;
+
+    return calcPercent + '%';
   },
 
-  getStreetView: function(streetView) {
+  /**
+   * Creates style code for displaying the street view image;
+   * @param  {String} streetView - URL for street view image.
+   * @return {String}
+   */
+  getStreetViewStyle: function(streetView) {
     return "url(" + streetView + ")";
   }
 
 }; // end of NeighborhoodViewModel
 
 
+// Initialize the whole thing
 NeighborhoodViewModel.init();
