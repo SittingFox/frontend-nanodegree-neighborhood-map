@@ -46,7 +46,12 @@ Bounce Marker Once
 Getting a map marker to bounce only one time is a little trickier than it sounds. Once again, [StackOverflow](https://stackoverflow.com/questions/7339200/bounce-a-pin-in-google-maps-once) to the rescue!
 
 
+Spinning Object
+---------------
+
+Once more, [Stack Overflow](https://stackoverflow.com/questions/14859322/css3-spin-animation) provided me with the way to make something spin with CSS3.
+
 Meowstic Image
 --------------
 
-I'll give thanks to [Pokémon Database](http://pokemondb.net/) for the image I needed. It was just the right size, fitting what PokéAPI seemed to use. It's definitely a site I want to remember for the future.
+I'll give thanks to [Pokémon Database](http://pokemondb.net/) for the image I needed of the female Meowstic. It was just the right size, fitting what PokéAPI seemed to use. It's definitely a site I want to remember for the future.
