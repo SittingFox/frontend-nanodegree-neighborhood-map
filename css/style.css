@@ -28,6 +28,7 @@ input {
 .header {
   background-color: #f53c24;
   color: white;
+  display: -webkit-flex;
   display: flex;
   flex-wrap: wrap;
   height: 48px;
@@ -63,6 +64,7 @@ h1 {
 
 /* Whole main area */
 .container {
+  display: -webkit-flex;
   display: flex;
   flex-wrap: nowrap;
   position: relative;
@@ -115,8 +117,7 @@ h1 {
 }
 
 
-.search-holder
-{
+.search-holder {
   height: 48px;
   padding: 5px;
 }
@@ -246,6 +247,7 @@ img.iw-image {
 
 
 .iw-stat-item {
+  display: -webkit-flex;
   display: flex;
   flex-wrap: wrap;
   padding-bottom: 1px;
