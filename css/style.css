@@ -83,7 +83,13 @@ h1 {
 
 @media screen and (max-width: 599px) {
   .drawer {
+    -moz-transform: translate(-300px, 0);
+    -moz-transition: -moz-transform 0.3s ease;
+    -ms-transform: translate(-300px, 0);
+    -o-transform: translate(-300px, 0);
+    -o-transition: -o-transform 0.3s ease;
     -webkit-transform: translate(-300px, 0);
+    -webkit-transition: -webkit-transform 0.3s ease;
     position: absolute;
     transform: translate(-300px, 0);
     transition: transform 0.3s ease;
@@ -93,6 +99,9 @@ h1 {
 
 
   .open {
+    -moz-transform: translate(0, 0);
+    -ms-transform: translate(0, 0);
+    -o-transform: translate(0, 0);
     -webkit-transform: translate(0, 0);
     transform: translate(0, 0);
   }
@@ -136,6 +145,7 @@ h1 {
 
 
 .location-item {
+  -moz-box-sizing: border-box;
   border-bottom: 1px solid #e0e0e0;
   box-sizing: border-box;
   display: list-item;
@@ -173,7 +183,7 @@ h1 {
 
 /* Info Window */
 .info-window {
-  overflow:hidden;
+  overflow: hidden;
   position: relative;
   text-align: center;
   width: 300px;
@@ -294,7 +304,7 @@ img.iw-image {
 .iw-description {
   font-size: 1.1em;
   margin: 0;
-  text-align: justify;;
+  text-align: justify;
 }
 
 
@@ -383,7 +393,9 @@ img.iw-image {
 
 /* Modal */
 .modal-overlay {
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
   background-color: black;
+  filter: alpha(opacity=50);
   height: 100%;
   left: 0;
   opacity: 0.5;
@@ -409,7 +421,7 @@ img.iw-image {
 
 
 .modal-link,
- .modal-link:visited {
+.modal-link:visited {
   color: #f53c24;
 }
 
