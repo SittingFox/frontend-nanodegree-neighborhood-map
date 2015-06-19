@@ -1394,7 +1394,7 @@
                     '<img class="iw-image" data-bind="attr: {src: image, alt: name}">' +
                   '</div>' +
                   '<ul class="iw-stat-list" data-bind="foreach: stats">' +
-                      '<li class="iw-stat-item">' +
+                      '<li class="iw-stat-item flex-container">' +
                         '<div class="iw-stat-name" data-bind="text: name"></div>' +
                         '<div class="iw-stat-number" data-bind="text: value"></div>' +
                         '<div class="iw-stat-bar">' +

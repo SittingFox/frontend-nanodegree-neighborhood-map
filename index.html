@@ -11,7 +11,7 @@
   <body>
 
     <!-- Top bar -->
-    <header class="header" data-bind="click: hideDrawer">
+    <header class="header flex-container" data-bind="click: hideDrawer">
       <a class="about" data-bind="click: showModal, clickBubble: false">
         ?
       </a>
@@ -21,7 +21,7 @@
       </a>
     </header>
 
-    <main class="container">
+    <main class="main flex-container">
       <!-- Drawer, which pops in and out on small screens -->
       <div class="drawer" data-bind="click: null, clickBubble: false">
         <div class="search-holder">

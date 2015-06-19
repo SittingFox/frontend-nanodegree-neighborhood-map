@@ -23,14 +23,22 @@ input {
 }
 
 
+.flex-container {
+  -ms-flex-wrap: wrap;
+  -webkit-flex-wrap: wrap;
+  display: -ms-flexbox;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+
 
 /* Top bar area */
 .header {
   background-color: #f53c24;
   color: white;
-  display: -webkit-flex;
-  display: flex;
-  flex-wrap: wrap;
   height: 48px;
   line-height: 48px;
   text-align: right;
@@ -63,10 +71,7 @@ h1 {
 
 
 /* Whole main area */
-.container {
-  display: -webkit-flex;
-  display: flex;
-  flex-wrap: nowrap;
+.main {
   position: relative;
   height: calc(100% - 48px);
   width: 100%;
@@ -247,9 +252,6 @@ img.iw-image {
 
 
 .iw-stat-item {
-  display: -webkit-flex;
-  display: flex;
-  flex-wrap: wrap;
   padding-bottom: 1px;
 }
 
