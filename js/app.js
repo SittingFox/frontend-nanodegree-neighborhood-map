@@ -1197,7 +1197,7 @@
        * @return {google.maps.Map} - Instance of Google Map object
        */
       function mapInitialize() {
-          var mapElement = document.querySelector('.map-canvas');
+          var mapElement = document.getElementsByClassName('map-canvas')[0];
           var googleplex = new google.maps.LatLng(37.422,-122.084058);
           var mapOptions = {
             center: googleplex,
@@ -1221,7 +1221,7 @@
         google.maps.event.addListener(infoWindow, 'domready', function () {
           if (!self.isInfoWindowLoaded)
           {
-            var infoWindowElement = document.querySelector('.info-window');
+            var infoWindowElement = document.getElementsByClassName('info-window')[0];
             ko.applyBindings( self, infoWindowElement );
             self.isInfoWindowLoaded = true;
           }
@@ -1230,10 +1230,11 @@
         return infoWindow;
       }
 
+      // Make view-related items easily accessible
       function viewItemsInitialize() {
-        self.drawer = document.querySelector('.drawer');
-        self.modal = document.querySelector('.modal');
-        self.scrollBox= document.querySelector('.location-holder');
+        self.drawer = document.getElementsByClassName('drawer')[0];
+        self.modal = document.getElementsByClassName('modal')[0];
+        self.scrollBox= document.getElementsByClassName('location-holder')[0];
       }
 
 
