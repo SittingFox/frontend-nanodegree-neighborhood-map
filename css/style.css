@@ -227,7 +227,6 @@ h1 {
 
 .iw-image-holder {
   background-position: 100px 100px;
-  display: inline-block;
   height: 100px;
   line-height: 100px;
   vertical-align: middle;
@@ -243,7 +242,6 @@ img.iw-image {
 
 
 .iw-stat-list {
-  display: inline-block;
   margin: 0;
   padding: 0;
   vertical-align: middle;
