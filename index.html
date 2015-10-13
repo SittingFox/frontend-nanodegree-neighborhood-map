@@ -64,9 +64,9 @@
     </aside>
 
     <!-- Scripts -->
-    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
     <script src="js/lib/knockout.js"></script>
     <script src="js/app.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?callback=googleSuccess" onerror="googleError()"></script>
 
     <!-- Knockout Template -->
     <script type="text/html" id="iw-template">

@@ -5,7 +5,32 @@
  * @required knockout.js
  */
 
-(function() {
+
+/**
+ * Called when the Google Maps script loads successfully, passing this knowledge
+ * so the View Model can know.
+ */
+function googleSuccess() {
+  "use strict";
+  runPokeMap(true);
+}
+
+/**
+ * Called when the Google Maps script fails to load, passing this knowledge so
+ * the View Model can know.
+ */
+function googleError() {
+  "use strict";
+  runPokeMap(false);
+}
+
+
+/**
+ * PokeMap, I choose you! Go!
+ * @param  {Boolean} isGoogleWorking - Whether Google Maps has loaded
+ *                                    successfully or not
+ */
+function runPokeMap(isGoogleWorking) {
 
   "use strict";
 
@@ -1188,7 +1213,7 @@
       });
 
       // Important booleans
-      self.isGoogleWorking = (typeof google !== 'undefined');
+      self.isGoogleWorking = isGoogleWorking;
       self.isInfoWindowLoaded = false;
 
 
@@ -1404,7 +1429,7 @@
     },
 
     /**
-     * Creates style code for displaying the street view image;
+     * Creates style code for displaying the street view image.
      * @param  {String} streetView - URL for street view image
      * @return {String} - Code for background-image
      */
@@ -1418,4 +1443,4 @@
   // Initialize the whole thing
   PokeMapViewModel.init();
 
-})();
+}
