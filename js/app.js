@@ -45,6 +45,7 @@ function runPokeMap(isGoogleWorking) {
     apiPokemonSearchURL: "http://pokeapi.co/api/v1/pokemon/",
     markerImage: "img/PokeMarker.png",
     streetViewURL: "http://maps.googleapis.com/maps/api/streetview?size=200x201&location=",
+    streetViewFallbackImage: "img/streetview-empty.jpg",
 
     // Knockout can know when allPokemon is updated
     allPokemon: ko.observableArray(),
@@ -109,6 +110,7 @@ function runPokeMap(isGoogleWorking) {
 
       self.stats = ko.observableArray();
       self.image = ko.observable("");
+      self.background = ko.observable("");
       self.description = ko.observable("");
       self.hasData = ko.pureComputed(function() {
         return self.stats().length !== 0 &&
@@ -242,6 +244,7 @@ function runPokeMap(isGoogleWorking) {
       function setupChain(data) {
         setStats(data);
         chainToSprite(data);
+        getBackground();
         chainToDescription(data);
       }
 
@@ -311,6 +314,36 @@ function runPokeMap(isGoogleWorking) {
         var url = Model.apiBaseURL + data.image;
 
         pokemon.image(url);
+      }
+
+      function getBackground() {
+
+        getImage(pokemon.streetView, backgroundLoaded, backgroundFail);
+
+        function getImage(url,
+                          callback,
+                          errorHandler) {
+          var image = document.createElement("img");
+
+          image.src = url;
+          image.onload = function() {
+            callback(url);
+          };
+          image.onerror = errorHandler;
+        }
+
+        function backgroundLoaded(url) {
+          setBackground(url);
+        }
+
+        function backgroundFail() {
+          setBackground(Model.streetViewFallbackImage);
+        }
+
+        function setBackground(url) {
+          var backgroundCode = "url(" + url + ")";
+          pokemon.background(backgroundCode);
+        }
       }
 
       /**

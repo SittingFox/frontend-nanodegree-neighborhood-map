@@ -78,7 +78,7 @@
               <span class="iw-number" data-bind="text: $parent.formatNumber(number)"></span>
             </header>
             <div class="iw-top flex-container">
-              <div class="iw-image-holder" data-bind="style: { backgroundImage: $parent.getStreetViewStyle(streetView) }">
+              <div class="iw-image-holder" data-bind="style: { backgroundImage: background() }">
                 <img class="iw-image" data-bind="attr: {src: image, alt: name}">
               </div>
               <ul class="iw-stat-list" data-bind="foreach: stats">
