@@ -55,6 +55,7 @@ h1 {
 
 .about,
 .hamburger {
+	cursor: pointer;
   font-size: 1.8em;
   height: 48px;
   text-align: center;
@@ -154,6 +155,7 @@ h1 {
   -moz-box-sizing: border-box;
   border-bottom: 1px solid #e0e0e0;
   box-sizing: border-box;
+  cursor: pointer;
   display: list-item;
   line-height: 24px;
   padding: 24px;
